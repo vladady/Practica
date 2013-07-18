@@ -18,11 +18,11 @@
 
   <?php
     
-    echo "Text adaugat de Andra";
-    echo "Text adaugat de Bozga Razvan";
-    echo "test adaugat de dany ban";
-    echo "Text adaugat de Deny";
-    echo "Text adaugat de Georgi";
+    echo "Text adaugat de Andra"."</br>";
+    echo "Text adaugat de Bozga Razvan"."</br>";
+    echo "test adaugat de Dany Ban"."</br>";
+    echo "Text adaugat de Deny"."</br>";
+    echo "Text adaugat de Georgi"."</br>";
   
   
 
