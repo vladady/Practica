@@ -17,20 +17,25 @@
   </header>
 
   <?php
+<<<<<<< HEAD
+    echo 'Text adaugat de Cosmin';
+=======
+<<<<<<< HEAD
+    
+=======
 
-
+>>>>>>> fd25392c5f07138ce36b2f090dab83a3c496c68a
     echo "Text adaugat de Andra";
     echo "Text adaugat de Bozga Razvan";
-<<<<<<< HEAD
-    echo "test adaugat de Dany Ban";
-=======
-    echo "text adaugat de catalin";
+	  echo "text adaugat de Catalin";
     echo "test adaugat de dany ban";
->>>>>>> 9a018fbf943c35ba0a1e59b1bd3cfd7c6e16349e
     echo "Text adaugat de Deny";
     echo "Text adaugat de Georgi";
   
+  
 
+
+>>>>>>> f625a969e553d83b1284d64a0fdc14c486b45824
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
     hide($content['links']);
@@ -48,3 +53,4 @@
   <?php print render($content['comments']); ?>
 
 </article> <!-- /.node -->
+
