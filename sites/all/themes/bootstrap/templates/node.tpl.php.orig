@@ -17,7 +17,11 @@
   </header>
 
   <?php
+<<<<<<< HEAD
+    echo 'x';
+=======
 echo 'text adaugat de mine :))';
+>>>>>>> d254e8747ec9b00b7abc88fbe826672c2530197c
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
     hide($content['links']);
