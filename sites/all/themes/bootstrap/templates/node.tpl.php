@@ -21,12 +21,10 @@
     echo "Text adaugat de Anda";
     echo "Text adaugat de Andra";
     echo "Text adaugat de Bozga Razvan";
-    echo "text adaugat de catalin";
+    echo "text adaugat de Catalin";
     echo "test adaugat de dany ban";
     echo "Text adaugat de Deny";
-    echo "Text adaugat Georgi ";
-
-	
+    echo "Text adaugat de Georgi";
   
 
     // Hide comments, tags, and links now so that we can render them later.
@@ -46,4 +44,3 @@
   <?php print render($content['comments']); ?>
 
 </article> <!-- /.node -->
-
