@@ -17,9 +17,15 @@
   </header>
 
   <?php
+<<<<<<< HEAD:sites/all/themes/bootstrap/templates/mode.tpl.php
 
 echo "Text adaugat Bozga Razvan";
    echo "Text adaugat Georgi ";
+=======
+     echo "test adaugat de dany ban"
+echo "Text adaugat Bozga Razvan";
+
+>>>>>>> 7221620cabdc0f4226ddb57a7b9b30e63022ad2b:sites/all/themes/bootstrap/templates/node.tpl.php
 	echo "Text adaugat de Andra";
   echo "Text adaugat de Deny";
 
