@@ -17,6 +17,7 @@
   </header>
 
   <?php
+echo 'text adaugat de mine :))';
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
     hide($content['links']);
