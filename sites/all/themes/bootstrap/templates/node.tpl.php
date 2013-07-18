@@ -17,7 +17,12 @@
   </header>
 
   <?php
-	echo "text adaugat de dani ban";
+     echo "test adaugat de dany ban"
+echo "Text adaugat Bozga Razvan";
+
+	echo "Text adaugat de Andra";
+  echo "Text adaugat de Deny";
+
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
     hide($content['links']);
