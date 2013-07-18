@@ -18,7 +18,7 @@
 
   <?php
 <<<<<<< HEAD:sites/all/themes/bootstrap/templates/mode.tpl.php
-
+echo "hello";
 echo "Text adaugat Bozga Razvan";
    echo "Text adaugat Georgi ";
 =======
