@@ -17,14 +17,18 @@
   </header>
 
   <?php
-    
+
+
     echo "Text adaugat de Andra";
     echo "Text adaugat de Bozga Razvan";
-	  echo "text adaugat de Catalin";
+<<<<<<< HEAD
+    echo "test adaugat de Dany Ban";
+=======
+    echo "text adaugat de catalin";
     echo "test adaugat de dany ban";
+>>>>>>> 9a018fbf943c35ba0a1e59b1bd3cfd7c6e16349e
     echo "Text adaugat de Deny";
     echo "Text adaugat de Georgi";
-  
   
 
     // Hide comments, tags, and links now so that we can render them later.
@@ -44,4 +48,3 @@
   <?php print render($content['comments']); ?>
 
 </article> <!-- /.node -->
-
