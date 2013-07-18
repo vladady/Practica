@@ -17,7 +17,11 @@
   </header>
 
   <?php
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> fd25392c5f07138ce36b2f090dab83a3c496c68a
     echo "Text adaugat de Andra";
     echo "Text adaugat de Bozga Razvan";
 	  echo "text adaugat de Catalin";
@@ -26,6 +30,7 @@
     echo "Text adaugat de Georgi";
   
   
+
 
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
