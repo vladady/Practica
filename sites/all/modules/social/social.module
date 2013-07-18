@@ -45,11 +45,10 @@ function social_menu() {
 }
 
 function social_get_users($limit = 9){
-  $output=array();
-  $results = db_select('friends', 'f')
-      ->fields('f', array('fid'))
-      ->condition('f.uid', $user->uid, '=')
-      ->execute();
+ /* global $user;
+  $photo=array();
+  $photo=db_select();
+  return $photo;*/
   
 }
 
