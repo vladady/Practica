@@ -17,7 +17,8 @@
   </header>
 
   <?php
-echo "Text adaugat Bozga Razvan";
+echo "Text adaugat Bozga Razvan
+Deny Pop";
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
     hide($content['links']);
