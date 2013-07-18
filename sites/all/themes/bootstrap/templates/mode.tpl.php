@@ -17,7 +17,12 @@
   </header>
 
   <?php
-echo 'text adaugat de Gia ';
+
+echo "Text adaugat Bozga Razvan";
+   echo "Text adaugat Georgi ";
+	echo "Text adaugat de Andra";
+  echo "Text adaugat de Deny";
+
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
     hide($content['links']);
@@ -35,3 +40,4 @@ echo 'text adaugat de Gia ';
   <?php print render($content['comments']); ?>
 
 </article> <!-- /.node -->
+
