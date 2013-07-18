@@ -15,7 +15,7 @@
       </span>
     <?php endif; ?>
   </header>
-	
+
   <?php
 echo "Text adaugat Bozga Razvan";
     // Hide comments, tags, and links now so that we can render them later.
