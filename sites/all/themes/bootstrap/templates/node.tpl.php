@@ -18,8 +18,7 @@
 
   <?php
 
-echo "Text adaugat Bozga Razvan";
-
+  echo "Text adaugat Bozga Razvan";
 	echo "Text adaugat de Andra";
   echo "Text adaugat de Deny";
 
