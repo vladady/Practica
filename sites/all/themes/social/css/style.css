@@ -1,0 +1,33 @@
+/**
+ * This file should get overwritten if Method 1 is used. If Method 2 is chosen,
+ * remove this comment and start adding your styles to this file.
+ */
+body.front{
+background-color: transparent;
+background: url('../img/city_background.jpg') no-repeat center top;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+color:#FFF;
+}
+.navbar-inverse .navbar-inner{
+background:#48a4cc;
+
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav>li>a{
+color:#F0F0F0;
+} 
+.search-block {
+background: #ccc;
+padding: 10px;
+}
+
+.search-block input {
+width: 100%;
+}
+.main-container.container {
+background: rgba(0,0,0, .7);
+border: 1px solid #333;
+}
