@@ -18,7 +18,7 @@ background:#48a4cc;
 
 .navbar-inverse .brand, .navbar-inverse .nav>li>a{
 color:#F0F0F0;
-} 
+}
 .search-block {
 background: #ccc;
 padding: 10px;
@@ -30,4 +30,10 @@ width: 100%;
 .main-container.container {
 background: rgba(0,0,0, .7);
 border: 1px solid #333;
+}
+
+#post-node-form{
+  width: 50%;
+  background-color: white;
+  margin: auto;
 }

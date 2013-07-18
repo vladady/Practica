@@ -31,7 +31,7 @@ function social_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
-  
+
   $items['frontpage'] = array(
     'title' => 'Front Page',
     'page callback' => 'social_front_page',
@@ -68,65 +68,65 @@ function social_menu() {
   $output['#suffix'] = '</div>';
   $results = db_select('friends', 'f')
       ->fields('f', array('uid'))
-      
+
       ->execute();
 
   $items = array();
   $i=1;
   $j=1;
   foreach ($results as $record) {
-    
+
     $node = node_load($record->uid);
     $post = node_view($node, 'teaser');
     $post = drupal_render($post);
-    
+
    if($i%3==0)
       $j++;
    $output[$j]['#markup'].=$post.' ';
    if(($i++)==9)
       break;
   }
-  
+
 
   return $output;
-  
+
 }
 */
 function social_front_page(){
   $output = '';
-  
+
   if(!user_is_logged_in()){
     $output['#prefix'] = '<div class="row-fluid">';
     $output['#suffix'] = '</div>';
-    
+
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
      // '#markup' => social_get_users(),
       '#weight' => 0,
     );
-    
+
     $output['right'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
       '#weight' => 1,
-    ); 
-        
+    );
+
     $form = drupal_get_form('user_register_form');
     $output['right']['#markup'] = drupal_render($form);
   }
   else{
     drupal_goto('wall');
   }
-  
+
   return $output;
 }
 
 function social_friend_list() {
   $output = array();
   global $user;
-  
-  
+
+
   $results = db_select('friends', 'f')
       ->fields('f', array('fid'))
       ->condition('f.uid', $user->uid, '=')
@@ -154,32 +154,32 @@ function social_friend_list() {
   );
 
   return $output;
-  
+
 }
 
 function friend_requests() {
   $output = array();
   global $user;
- 
+
   $query = db_select('friend_requests', 'fr');
   $query->addField('fr', 'from', 't');
   $results = $query->condition('fr.to', $user->uid, '=')
       ->execute();
 
   $items = array();
- 
+
   foreach ($results as $record) {
-    
+
     $profile = profile2_load_by_user($record->t);
     if(empty($profile)) {
       continue;
     }
-    
+
     $profile = reset($profile);
     $p = profile2_view($profile, 'teaser');
     $items[] = drupal_render($p);
-    
-   
+
+
   }
 
 
@@ -193,10 +193,68 @@ function friend_requests() {
   return '';
 }
 
+function social_post_form(){
+  global $user;
+
+  $path = drupal_get_path('module', 'social');
+  drupal_add_js($path . '/social.js');
+
+  module_load_include('inc', 'node', 'node.pages');
+  $node_type = 'post';
+  $form_id = $node_type . '_node_form';
+
+  $node = (object)array(
+    'uid' => $user->uid,
+    'name' => (isset($user->name) ? $user->name : ''),
+    'type' => $node_type,
+  );
+
+  node_object_prepare($node);
+
+  $form = drupal_get_form($form_id, $node);
+  $remove = array('additional_settings');
+
+  foreach ($remove as $key) {
+    unset($form[$key]);
+  }
+
+  //Alter
+  $form['actions']['submit']['#value'] = 'Post';
+  $form['actions']['submit']['#attributes']['class'] = array('btn-large', 'btn-success');
+
+  $links = "
+    <ul class='nav nav-tabs' id='post-options'>
+      <li class='active'>
+        <a href='#' rel='edit-body'><i class='icon-edit'></i>" . t('Update status') . "</a>
+      </li>
+      <li>
+        <a href='#' rel='edit-field-poza'><i class='icon-camera'></i>" . t('Upload image') . "</a>
+      </li>
+    </ul>";
+
+  $form['links'] = array(
+    '#markup' => $links,
+    '#weight' => -10,
+  );
+
+  return $form;
+}
+
+function social_form_alter(&$form, &$form_state, $form_id) {
+  if($form_id == 'post_node_form'){
+    $form['actions']['submit']['#submit'][] = 'social_post_form_submit';
+  }
+}
+
+function social_post_form_submit(&$form, &$form_state){
+  $form_state['redirect'] = array('wall');
+}
+
 function social_wall_posts() {
-  $limit = 2;
+  $limit = 4;
   $output = array();
   global $user;
+
   $results = db_select('node', 'n');
   $results->join('friends', 'f', 'f.fid = n.uid OR n.uid = ' . $user->uid);
   $results = $results->fields('n', array('nid', 'title'))
@@ -217,12 +275,16 @@ function social_wall_posts() {
     $items[] = $post;
   }
 
-//return theme('item_list', array('items' => $items));
+
+  $output['post_add'] = array(
+    '#markup' => drupal_render(social_post_form()),
+  );
+  //return theme('item_list', array('items' => $items));
   $output['posts'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
   );
-  
+
   $output['pager'] = array('#theme' => 'pager');
 
   return $output;
