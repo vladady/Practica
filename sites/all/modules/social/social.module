@@ -45,19 +45,25 @@ function social_menu() {
 }
 
 function social_get_users($limit = 9){
+  $output=array();
+  $results = db_select('friends', 'f')
+      ->fields('f', array('fid'))
+      ->condition('f.uid', $user->uid, '=')
+      ->execute();
   
 }
 
 function social_front_page(){
   $output = '';
   
-  if(!user_is_logged_in() || 1){
+  if(!user_is_logged_in()){
     $output['#prefix'] = '<div class="row-fluid">';
     $output['#suffix'] = '</div>';
     
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
+      '#markup' => social_get_users(),
       '#weight' => 0,
     );
     
@@ -69,7 +75,6 @@ function social_front_page(){
         
     $form = drupal_get_form('user_register_form');
     $output['right']['#markup'] = drupal_render($form);
-    dpm($output);
   }
   else{
     drupal_goto('wall');
