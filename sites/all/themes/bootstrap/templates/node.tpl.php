@@ -18,9 +18,14 @@
 
   <?php
 
-  echo "Text adaugat Bozga Razvan";
-	echo "Text adaugat de Andra";
-  echo "Text adaugat de Deny";
+    echo "Text adaugat de Andra";
+    echo "Text adaugat de Bozga Razvan";
+    echo "text adaugat de catalin";
+    echo "test adaugat de dany ban";
+    echo "Text adaugat de Deny";
+    echo "Text adaugat de Georgi";
+  
+
 
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
