@@ -18,10 +18,15 @@
 
   <?php
 <<<<<<< HEAD
-    echo 'x';
+    echo 'text adaugat de Anda';
 =======
-echo 'text adaugat de mine :))';
->>>>>>> d254e8747ec9b00b7abc88fbe826672c2530197c
+     echo "test adaugat de dany ban"
+echo "Text adaugat Bozga Razvan";
+
+	echo "Text adaugat de Andra";
+  echo "Text adaugat de Deny";
+
+>>>>>>> 7221620cabdc0f4226ddb57a7b9b30e63022ad2b
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
     hide($content['links']);
