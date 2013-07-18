@@ -31,8 +31,51 @@ function social_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
+  
+  $items['frontpage'] = array(
+    'title' => 'Front Page',
+    'page callback' => 'social_front_page',
+    'access callback' => TRUE,
+    'weight' => 0,
+    'type'=> MENU_CALLBACK,
+  );
+
 
   return $items;
+}
+
+function social_get_users($limit = 9){
+  
+}
+
+function social_front_page(){
+  $output = '';
+  
+  if(!user_is_logged_in() || 1){
+    $output['#prefix'] = '<div class="row-fluid">';
+    $output['#suffix'] = '</div>';
+    
+    $output['left'] = array(
+      '#prefix' => '<div class="span6">',
+      '#suffix' => '</div>',
+      '#weight' => 0,
+    );
+    
+    $output['right'] = array(
+      '#prefix' => '<div class="span6">',
+      '#suffix' => '</div>',
+      '#weight' => 1,
+    ); 
+        
+    $form = drupal_get_form('user_register_form');
+    $output['right']['#markup'] = drupal_render($form);
+    dpm($output);
+  }
+  else{
+    drupal_goto('wall');
+  }
+  
+  return $output;
 }
 
 function social_friend_list() {
@@ -56,7 +99,7 @@ function social_friend_list() {
     $profile = reset($profile);
     $p = profile2_view($profile, 'teaser');
     $items[] = drupal_render($p);
-    
+
   }
 
 
@@ -151,3 +194,5 @@ function social_logged_in() {
 function social_edit_post($pid = 1) {
   return $pid;
 }
+
+
