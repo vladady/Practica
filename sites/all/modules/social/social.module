@@ -9,7 +9,7 @@ function social_menu() {
     'page callback' => 'social_friend_list',
     'access callback' => TRUE,
     'weight' => 1,
-    'type' => MENU_CALLBACK,
+    'type' => MENU_NORMAL_ITEM,
   );
   $items['requests'] = array(
     'title' => 'Friend requests',
@@ -35,39 +35,75 @@ function social_menu() {
   return $items;
 }
 
-function social_friend_list($name = '') {
-  $limit=1;
-global $user;  
-$output = array();
-$results = db_select('friends', 'f')
-->fields('f', array('fid','uid' ))
-->condition('uid', $user->uid, '=')
-->extend('PagerDefault')
-->limit($limit)
-->execute();
+function social_friend_list() {
+  $output = array();
+  global $user;
+  
+  dpm($user->uid);
+  $results = db_select('friends', 'f')
+      ->fields('f', array('fid'))
+      ->condition('f.uid', $user->uid, '=')
+      ->execute();
 
-$items = array();
-foreach ($results as $record) {
-$post = $record->fid;
-$post=profile2_load_by_user($post);
-dpm($post);
-//$node = node_load($record->fid);
-//$post = node_view($node, 'teaser');
-//$post = drupal_render($post);
+  $items = array();
 
-$items[] = $post;
-}
-$output['posts'] = array(
+  foreach ($results as $record) {
+
+    $profile = profile2_load_by_user($record->fid);
+     if(empty($profile)) {
+      continue;
+    }
+    $profile = reset($profile);
+    $p = profile2_view($profile, 'teaser');
+    $items[] = drupal_render($p);
+    
+  }
+
+
+  $output['friends'] = array(
     '#theme' => 'item_list',
     '#items' => $items,
+    '#type' => 'ul',
   );
-$output['pager'] = array('#theme' => 'pager');
-//return theme('item_list', array('items' => $items));
-return $output;
+
+  return $output;
+  return '';
 }
 
 function friend_requests() {
-  return t('Friend requests');
+  $output = array();
+  global $user;
+ 
+  $query = db_select('friend_requests', 'fr');
+  $query->addField('fr', 'from', 't');
+  $results = $query->condition('fr.to', $user->uid, '=')
+      ->execute();
+
+  $items = array();
+ 
+  foreach ($results as $record) {
+    
+    $profile = profile2_load_by_user($record->t);
+    if(empty($profile)) {
+      continue;
+    }
+    
+    $profile = reset($profile);
+    $p = profile2_view($profile, 'teaser');
+    $items[] = drupal_render($p);
+    
+   
+  }
+
+
+  $output['friends'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+    '#type' => 'ul',
+  );
+
+  return $output;
+  return '';
 }
 
 function social_wall_posts() {
