@@ -82,7 +82,7 @@ function social_friend_list() {
   $output = array();
   global $user;
   
-  dpm($user->uid);
+  
   $results = db_select('friends', 'f')
       ->fields('f', array('fid'))
       ->condition('f.uid', $user->uid, '=')
