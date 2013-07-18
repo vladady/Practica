@@ -43,15 +43,55 @@ function social_menu() {
 
   return $items;
 }
+/*
+  function social_get_users($limit = 9){
+  global $user;
+  $output['#prefix'] = '<div class="row-fluid">';
+  $output[1]=array(
+                    '#prefix'=>'<div class=span4">',
+                    '#markup'=>'',
+                    '#suffix'=>'</div>',
+                    '#weight' => 0,
+                    );
+  $output[2]=array(
+                    '#prefix'=>'<div class=span4">',
+                    '#markup'=>'',
+                    '#suffix'=>'</div>',
+                    '#weight' => 1,
+                    );
+  $output[3]=array(
+                    '#prefix'=>'<div class=span4">',
+                    '#markup'=>'',
+                    '#suffix'=>'</div>',
+                    '#weight' => 2,
+                    );
+  $output['#suffix'] = '</div>';
+  $results = db_select('friends', 'f')
+      ->fields('f', array('uid'))
+      
+      ->execute();
 
-function social_get_users($limit = 9){
- /* global $user;
-  $photo=array();
-  $photo=db_select();
-  return $photo;*/
+  $items = array();
+  $i=1;
+  $j=1;
+  foreach ($results as $record) {
+    
+    $node = node_load($record->uid);
+    $post = node_view($node, 'teaser');
+    $post = drupal_render($post);
+    
+   if($i%3==0)
+      $j++;
+   $output[$j]['#markup'].=$post.' ';
+   if(($i++)==9)
+      break;
+  }
+  
+
+  return $output;
   
 }
-
+*/
 function social_front_page(){
   $output = '';
   
@@ -62,7 +102,7 @@ function social_front_page(){
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
-      '#markup' => social_get_users(),
+     // '#markup' => social_get_users(),
       '#weight' => 0,
     );
     
@@ -114,7 +154,7 @@ function social_friend_list() {
   );
 
   return $output;
-  return '';
+  
 }
 
 function friend_requests() {
