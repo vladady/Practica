@@ -1,0 +1,48 @@
+<?php
+
+function friends_schema() {
+  $schema['friends'] = array(
+    'description' => t('Friends table'),
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'fid' => array(
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  $schema['friend_requests'] = array(
+    'description' => 'Friend reguests list',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'from' => array(
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'to' => array(
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}

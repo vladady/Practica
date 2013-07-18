@@ -1,0 +1,5 @@
+name=friends
+description = friends list
+
+core = 7.x
+package = friends

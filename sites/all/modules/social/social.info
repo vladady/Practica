@@ -1,0 +1,5 @@
+name=Social
+description = Social network
+
+core = 7.x
+package = Practica

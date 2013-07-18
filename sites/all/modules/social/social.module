@@ -1,0 +1,117 @@
+<?php
+
+// Implements hook_menu().
+function social_menu() {
+  $items = array();
+  $items['friends'] = array(
+    'title' => 'Friend list',
+    'description' => 'A list of friends',
+    'page callback' => 'social_friend_list',
+    'access callback' => TRUE,
+    'weight' => 1,
+    'type' => MENU_CALLBACK,
+  );
+  $items['requests'] = array(
+    'title' => 'Friend requests',
+    'page callback' => 'friend_requests',
+    'access callback' => TRUE,
+    'weight' => 0,
+  );
+  $items['wall'] = array(
+    'title' => 'Wall posts',
+    'page callback' => 'social_wall_posts',
+    'access callback' => 'social_logged_in',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['post/%/edit'] = array(
+    'title' => 'Edit post',
+    'page callback' => 'social_edit_post',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function social_friend_list($name = '') {
+  $limit=1;
+global $user;  
+$output = array();
+$results = db_select('friends', 'f')
+->fields('f', array('fid','uid' ))
+->condition('uid', $user->uid, '=')
+->extend('PagerDefault')
+->limit($limit)
+->execute();
+
+$items = array();
+foreach ($results as $record) {
+$post = $record->fid;
+$post=profile2_load_by_user($post);
+dpm($post);
+//$node = node_load($record->fid);
+//$post = node_view($node, 'teaser');
+//$post = drupal_render($post);
+
+$items[] = $post;
+}
+$output['posts'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
+$output['pager'] = array('#theme' => 'pager');
+//return theme('item_list', array('items' => $items));
+return $output;
+}
+
+function friend_requests() {
+  return t('Friend requests');
+}
+
+function social_wall_posts() {
+  $limit = 2;
+  $output = array();
+  global $user;
+  $results = db_select('node', 'n');
+  $results->join('friends', 'f', 'f.fid = n.uid OR n.uid = ' . $user->uid);
+  $results = $results->fields('n', array('nid', 'title'))
+      ->condition('f.uid', $user->uid)
+      ->condition('n.type', 'post')
+      ->orderBy('n.created', 'DESC')
+      ->extend('PagerDefault')
+      ->limit($limit)
+      ->execute();
+
+  $items = array();
+  foreach ($results as $record) {
+
+    $node = node_load($record->nid);
+    $post = node_view($node, 'teaser');
+    $post = drupal_render($post);
+
+    $items[] = $post;
+  }
+
+//return theme('item_list', array('items' => $items));
+  $output['posts'] = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
+  
+  $output['pager'] = array('#theme' => 'pager');
+
+  return $output;
+}
+
+function social_logged_in() {
+  global $user;
+  if ($user->uid)
+    return TRUE;
+  return FALSE;
+}
+
+function social_edit_post($pid = 1) {
+  return $pid;
+}
