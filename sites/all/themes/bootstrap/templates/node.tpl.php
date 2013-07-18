@@ -17,22 +17,17 @@
   </header>
 
   <?php
-<<<<<<< HEAD
-     
-echo "Text adaugat de Andra";
-echo 'text adaugat de Anda';
-=======
-<<<<<<< HEAD:sites/all/themes/bootstrap/templates/mode.tpl.php
-echo "hello";
-echo "Text adaugat Bozga Razvan";
-   echo "Text adaugat Georgi ";
-=======
-     echo "test adaugat de dany ban"
->>>>>>> 942eb5c7b71b1cfddaa7b921536378e43549d2bc
-echo "Text adaugat Bozga Razvan";
-echo "test adaugat de dany ban";
-echo "Text adaugat de Deny";
-echo "Text adaugat Georgi ";
+
+    echo "Text adaugat de Anda";
+    echo "Text adaugat de Andra";
+    echo "Text adaugat de Bozga Razvan";
+    echo "text adaugat de catalin";
+    echo "test adaugat de dany ban";
+    echo "Text adaugat de Deny";
+    echo "Text adaugat Georgi ";
+
+	
+  
 
     // Hide comments, tags, and links now so that we can render them later.
     hide($content['comments']);
@@ -51,3 +46,4 @@ echo "Text adaugat Georgi ";
   <?php print render($content['comments']); ?>
 
 </article> <!-- /.node -->
+
