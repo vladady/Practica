@@ -53,7 +53,8 @@ body.front{
   width: 50%;
   background-color: white;
   margin: auto;
-  width: 800px;
+  width: 795px;
+  margin-left: 185px;
 }
 
 .control-label{
