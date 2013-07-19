@@ -43,10 +43,23 @@ body.front{
 .main-container.container{
 	background: rgba(0,0,0, .6);
 	border: 1px solid #333;
+	color:#F0F0F0;
 }
+
 
 .navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus{
 	background-color: #2294C0;
 	height: 25px;
 
+}
+
+.main-container.container {
+background: rgba(0,0,0, .7);
+border: 1px solid #333;
+}
+
+#post-node-form{
+  width: 50%;
+  background-color: white;
+  margin: auto;
 }
