@@ -39,9 +39,9 @@ function social_menu() {
     'weight' => 0,
     'type'=> MENU_CALLBACK,
   );
-  $items['users'] = array(
-    'title' => 'Users',
-    'page callback' => 'social_users',
+  $items['userslist'] = array(
+    'title' => 'Users list',
+    'page callback' => 'social_users_list',
     'access callback' => TRUE,
     'weight' => 0,
     'type'=> MENU_CALLBACK,
@@ -51,21 +51,21 @@ function social_menu() {
   return $items;
 }
 
-function social_users(){
+function social_users_list(){
   $output = '';
   global $user, $base_url;
   $theme_path = $base_url . '/' . drupal_get_path('theme', 'social');
   
   $results = db_select('profile', 'n')
       ->fields('n', array('uid'))
+      ->condition('uid', $user->uid, '<>')
       ->execute();
-  dpm($results);
 
   $items = array();
   $i = 0;
 
   foreach ($results as $record) {
-    $profile = profile2_load_by_user();
+    $profile = profile2_load_by_user($record->uid);
     $profile = reset($profile);
     if (empty($profile) || empty($profile->field_nume))  {
       continue;
@@ -92,9 +92,9 @@ function social_users(){
 							<h3>';
     @$output .= $profile->field_nume['und'][0]['value'] . " " . $profile->field_prenume['und'][0]['value'];
     $output .= "</h3>
-							<p>
-								aaaaaaaaa
-							</p>
+							<p>".press_buton($record->uid)
+								
+						."	</p>
 						</div>
 					</div>
 				</li>";
@@ -390,4 +390,40 @@ function social_edit_post($pid = 1) {
   return $pid;
 }
 
+function press_buton($idu){
+  global $user;
+  $output=' ';
+  $is_friend = db_select('friends', 'f')
+      ->fields('f', array('uid','fid'))
+      ->condition('f.uid', $user->uid) 
+      ->condition('f.fid',$idu)
+      ->execute()
+      ->rowCount(); 
+  if($is_friend){
+    return $output='prieten';
+  }
+  
+  $results2 = db_select('friends_requests', 'f')
+    ->fields('f', array('to','from'))
+    ->condition('f.to', $idu) 
+    ->condition('f.from',$user->uid)
+    ->execute()
+    ->rowCount(); 
+    if($results2){
+      return $output='accepta/respinge cerere';
+    }
+    
+    $results3 = db_select('friends_requests', 'f')
+      ->fields('f', array('to','from'))
+      ->condition('f.to', $user->uid) 
+      ->condition('f.from',$idu)
+      ->execute()
+      ->rowCount(); 
+      if($results3){
+          return $output='ai trimis cerere';
+      }
+  
+
+  return  $output="trimite cerere de prietenie";
+}
 
