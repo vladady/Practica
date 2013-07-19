@@ -390,9 +390,9 @@ function social_wall_posts() {
     $items[] = $post;
   }
 
-
+  $form = social_post_form();
   $output['post_add'] = array(
-    '#markup' => drupal_render(social_post_form()),
+    '#markup' => drupal_render($form),
   );
   //return theme('item_list', array('items' => $items));
   $output['posts'] = array(
