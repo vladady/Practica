@@ -69,49 +69,6 @@ function social_get_users($limit = 9){
   
   $results = $query->orderBy('cnt', 'DESC')
     ->execute();
-  
-  /* $results = array(
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-  );
-  */
 
   $i = 0;
   foreach($results as $record){
@@ -134,51 +91,6 @@ function social_get_users($limit = 9){
   }
 
   return $output;
-
-  $output['#prefix'] = '<div class="row-fluid">';
-  $output[1]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 0,
-                    );
-  $output[2]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 1,
-                    );
-  $output[3]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 2,
-                    );
-  $output['#suffix'] = '</div>';
-  $results = db_select('friends', 'f')
-      ->fields('f', array('uid'))
-
-      ->execute();
-
-  $items = array();
-  $i=1;
-  $j=1;
-  foreach ($results as $record) {
-
-    $node = node_load($record->uid);
-    $post = node_view($node, 'teaser');
-    $post = drupal_render($post);
-
-   if($i%3==0)
-      $j++;
-   $output[$j]['#markup'].=$post.' ';
-   if(($i++)==9)
-      break;
-  }
-
-
-  return $output;
-
 
 }
 
