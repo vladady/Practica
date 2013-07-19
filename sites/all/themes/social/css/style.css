@@ -15,7 +15,6 @@ body.front{
 
 
 
-
 .main-container.container{
 	width: 85%;
 	background: rgba(100,200,250,0.2);
@@ -50,38 +49,73 @@ body.front{
 
 /* end bara de navigare*/
 
-#post-node-form{
+.page-wall #post-node-form{
   width: 50%;
   background-color: white;
   margin: auto;
+  width: 795px;
+  margin-left: 185px;
+}
+
+.control-label{
+	color: black; 
+}
+
+.page-wall .form-file{
+	color: black;
 }
 
 /* wall */
-.html.not-front.logged-in.no-sidebars.page-wall.modal{
-position:relative;
-z-index: 0;
-width: 800px;
-margin-left: -400px;
+.page-wall .modal{
+	position:relative;
+	z-index: 0;
+	width: 800px;
+	margin-left: -400px;
 }
 
-.html.not-front.logged-in.no-sidebars.page-wall.first{
+ul li.first{
 	list-style: none;
 }
-.html.not-front.logged-in.no-sidebars.page-wall.last{
+ul li.last{
 	list-style: none;
 }
 
-.html.not-front.logged-in.no-sidebars.page-wall.modal-header{
+.modal-header{
 	padding: 60px 20px;
 }
 
-.html.not-front.logged-in.no-sidebars.page-wall.field-items{
+.page-wall .field-items{
 	float: left;
 	margin-top: -35px;
 	padding: 10px;
 }
 
+.user-name{
+	color:black;
+}
+
+.page-wall .field-item.even{
+	color: black;
+}
+
 
 /* end wall */
 
+.lead{
+	color:black;
+}
 
+.page-header{
+	color: black;
+}
+
+/* page profile */
+.page-profile-main .content{
+	color: black;
+}
+
+.page-profile-main .image-widget-data{
+	color: black;
+}
+
+/* end page profile */
