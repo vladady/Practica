@@ -31,3 +31,27 @@ width: 100%;
 background: rgba(0,0,0, .7);
 border: 1px solid #333;
 }
+
+.modal{
+position:relative;
+z-index: 0;
+width: 800px;
+margin-left: -400px;
+}
+
+.first{
+	list-style: none;
+}
+.last{
+	list-style: none;
+}
+
+.modal-header{
+	padding: 60px 20px;
+}
+
+.field-items{
+	float: left;
+	margin-top: -35px;
+	padding: 10px;
+}
