@@ -224,7 +224,9 @@ function social_post_form(){
   global $user;
 
   $path = drupal_get_path('module', 'social');
+  drupal_add_library ( 'system' , 'ui.tabs' );
   drupal_add_js($path . '/social.js');
+
 
   module_load_include('inc', 'node', 'node.pages');
   $node_type = 'post';
@@ -250,12 +252,12 @@ function social_post_form(){
   $form['actions']['submit']['#attributes']['class'] = array('btn-large', 'btn-success');
 
   $links = "
-    <ul class='nav nav-tabs' id='post-options'>
-      <li class='active'>
-        <a href='#' rel='edit-body'><i class='icon-edit'></i>" . t('Update status') . "</a>
+    <ul id='post-options'>
+      <li>
+        <a href='#edit-body' rel='edit-body'><i class='icon-edit'></i>" . t('Update status') . "</a>
       </li>
       <li>
-        <a href='#' rel='edit-field-poza'><i class='icon-camera'></i>" . t('Upload image') . "</a>
+        <a href='#edit-field-poza' rel='edit-field-poza'><i class='icon-camera'></i>" . t('Upload image') . "</a>
       </li>
     </ul>";
 
