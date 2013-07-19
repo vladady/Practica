@@ -49,6 +49,11 @@ body.front{
 
 /* end bara de navigare*/
 
+.date_create {
+float:right;
+color:black;
+}
+
 .page-wall #post-node-form{
   width: 50%;
   background-color: white;
