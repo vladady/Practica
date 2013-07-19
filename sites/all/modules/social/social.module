@@ -46,6 +46,13 @@ function social_menu() {
     'weight' => 0,
     'type'=> MENU_CALLBACK,
   );
+  
+  $items['add'] = array(
+    'title' => 'Add friend',
+    'page callback' => 'social_add_friend',
+    'access callback' => 'social_logged_in',
+    'type' => MENU_CALLBACK,
+  );
 
 
   return $items;
@@ -241,49 +248,89 @@ function social_friend_list() {
   }
 
   return $output;
-
 }
-function add($friend_r){
+
+function _social_add($friend_r){
   global $user;
-  
   db_insert('friends')
-        ->fields(array(
-          'uid'=> $user->uid,
-          'fid'=> $friend_r,
-          
-        ))
-      -> execute();
-  
+      ->fields(array(
+        'uid'=> $user->uid,
+        'fid'=> $friend_r,
+
+      ))
+    -> execute();
   db_insert('friends')
         ->fields(array(
           'uid'=> $friend_r,
           'fid'=> $user->uid,
-          
+
         ))
       -> execute();
- 
-  
 }
 
-function rem(){
-  
+function _social_remove($friend_r){
+   global $user;
+   db_query("DELETE FROM friend_requests WHERE `from` = :f AND `to` = :t", array(
+    ':t' => $user->uid, ':f' => $friend_r,
+  ));
 }
+
+function social_buttons($uid, $type = 'add'){
+  $output = '';
+  
+  switch($type){
+    case 'add':
+      $output .=  '<button type="button" class="request-button" data-type="add" data-id="' . $uid. '">Add as friend</button>';
+      break;
+    
+    case 'respond':
+      $output .=  '<button type="button" class="request-button" data-type="accept" data-id="' . $uid. '">Accept</button> 
+                 <button type="button" class="request-button" data-type="deny" data-id="' . $uid . '">Deny</button>';
+		  break;
+  }
+  
+  return $output; 
+}
+
+function social_add_friend(){
+  $type = isset($_POST['type']) ? $_POST['type'] : '';
+  $friend_r = isset($_POST['fid']) ? $_POST['fid'] : 0;  
+  
+  switch($type) {
+    case 'accept':
+      if(!$friend_r){
+        return FALSE;
+      }
+      _social_add($friend_r);
+      _social_remove($friend_r);
+      break;
+      
+    case 'deny':
+      _social_remove($friend_r);
+      break;
+  }  
+}
+
 function friend_requests() {
   $output = '';
   global $user, $base_url;
   $theme_path = $base_url . '/' . drupal_get_path('theme', 'social');
-  $query = db_select('friend_requests', 'fr');
-  $query->addField('fr', 'from', 't');
-  $results = $query->condition('fr.to', $user->uid, '=')
-      ->execute();
+    
+  $path = drupal_get_path('module', 'social');
+  drupal_add_library ( 'system' , 'ui.tabs' );
+  drupal_add_js($path . '/social.js');
+  
   $i=0;
   $items = array();
   
+  $query = db_select('friend_requests', 'fr');
+  $query->addField('fr', 'from', 'f');
+  $results = $query->condition('fr.to', $user->uid, '=')
+    ->execute();
+  
   foreach ($results as $record) {
-
-    $profile = profile2_load_by_user($record->t);
-   $profile = reset($profile);
-   
+    $profile = profile2_load_by_user($record->f);
+    $profile = reset($profile);
    
     if (empty($profile) || empty($profile->field_nume))  {
       continue;
@@ -295,7 +342,7 @@ function friend_requests() {
       $output .= '<ul class="thumbnails">';
     }
 
-    $output .= '<li class="span4">';
+    $output .= '<li class="span4" id="user-' . $record->f . '">';
     $output .= '<div class="thumbnail">';
 
     if (isset($profile->field_poza) && !empty($profile->field_poza)) {
@@ -312,8 +359,8 @@ function friend_requests() {
     $output .= '</h3>
 							<p>
               ';
-		$output .=  '<button type="button" onclick="add($profile->uid)">Yes</button> 
-                 <button type="button" onclick="rem()">No</button>';
+		$output .=  '<button type="button" class="request-button" data-type="accept" data-id="' . $record->f . '">Yes</button> 
+                 <button type="button" class="request-button" data-type="deny" data-id="' . $record->f . '">No</button>';
 		$output .="	</form> </p>
 						</div>
 					</div>
