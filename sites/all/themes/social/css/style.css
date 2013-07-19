@@ -3,31 +3,50 @@
  * remove this comment and start adding your styles to this file.
  */
 body.front{
-background-color: transparent;
-background: url('../img/city_background.jpg') no-repeat center top;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-color:#FFF;
+	background-color: transparent;
+	background: url('../img/mountain-background.jpg') no-repeat center top;
+	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;
+ 	height: 65px;
+	color:#FFF;
 }
-.navbar-inverse .navbar-inner{
-background:#48a4cc;
 
+
+.navbar .container{
+	width: 65%;
+}
+
+
+.main-container.container{
+	width: 65%;
+}
+
+.footer{
+	width: 65%;
+	margin-top: 15px;
+	padding: 9px 0 36px;
+	border-top: 1px solid #333;
+}
+/*Bara de Navigare*/
+.navbar-inverse .navbar-inner{
+	background:#48a4cc;
+	height: 45px;
 }
 
 .navbar-inverse .brand, .navbar-inverse .nav>li>a{
-color:#F0F0F0;
+	color:#F0F0F0;
 } 
-.search-block {
-background: #ccc;
-padding: 10px;
+
+
+.main-container.container{
+	background: rgba(0,0,0, .6);
+	border: 1px solid #333;
 }
 
-.search-block input {
-width: 100%;
-}
-.main-container.container {
-background: rgba(0,0,0, .7);
-border: 1px solid #333;
+.navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus{
+	background-color: #2294C0;
+	height: 25px;
+
 }
