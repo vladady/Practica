@@ -192,7 +192,7 @@ function social_front_page(){
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
-     // '#markup' => social_get_users(),
+      '#markup' => social_get_users(),
       '#weight' => 0,
     );
 

@@ -23,7 +23,7 @@
       <?php if (!empty($primary_nav) || !empty($secondary_nav) || !empty($page['navigation'])): ?>
         <div class="nav-collapse collapse">
           <nav role="navigation">
-            <?php if (!empty($primary_nav)): ?>
+            <?php if (!empty($primary_nav) && !drupal_is_front_page()): ?>
               <?php print render($primary_nav); ?>
             <?php endif; ?>
             <?php if (!empty($secondary_nav)): ?>
@@ -42,10 +42,6 @@
 <div class="main-container container">
 
   <header role="banner" id="page-header">
-    <?php if (!empty($site_slogan)): ?>
-      <p class="lead"><?php print $site_slogan; ?></p>
-    <?php endif; ?>
-
     <?php print render($page['header']); ?>
   </header> <!-- /#header -->
 
@@ -63,7 +59,7 @@
       <?php endif; ?>
       <a id="main-content"></a>
       <?php print render($title_prefix); ?>
-      <?php if (!empty($title)): ?>
+      <?php if (!empty($title) && !drupal_is_front_page()): ?>
         <h1 class="page-header"><?php print $title; ?></h1>
       <?php endif; ?>
       <?php print render($title_suffix); ?>

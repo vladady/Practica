@@ -4,7 +4,7 @@
  */
 body.front{
 	background-color: transparent;
-	background: url('../img/mountain-background.jpg') no-repeat center top;
+	background: url('../img/3-background.jpg') no-repeat center top;
 	-webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
@@ -13,12 +13,39 @@ body.front{
 	color:#FFF;
 }
 
+.row-fluid{
 
 
+}
+
+
+/*Formular*/
+.user-info-from-cookie{
+	background: rgba(0, 0, 0, 0.6); 
+	padding: 10px;
+	margin-left: 100px;
+	margin-top: 90px;
+	margin-right: 10px;
+}
+.password-strength-title{
+	margin-left: -35px;
+
+}
+
+.password-indicator{
+	width: 150px;
+	margin-left: -35px;
+}
+
+.control-group form-type-textfield form-item-name form-item{
+	width: 250px;
+	margin-left: 210px;
+}
+/* end Formular*/
 
 .main-container.container{
 	width: 85%;
-	background: rgba(100,200,250,0.2);
+	background: rgba(100,200,250,0.1);
 	color:#F0F0F0;
 }
 
@@ -58,10 +85,10 @@ body.front{
 
 /* wall */
 .html.not-front.logged-in.no-sidebars.page-wall.modal{
-position:relative;
-z-index: 0;
-width: 800px;
-margin-left: -400px;
+	position:relative;
+	z-index: 0;
+	width: 800px;
+	margin-left: -400px;
 }
 
 .html.not-front.logged-in.no-sidebars.page-wall.first{
