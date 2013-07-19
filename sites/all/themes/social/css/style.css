@@ -19,7 +19,7 @@ body.front{
 .main-container.container{
 	width: 85%;
 	background: rgba(100,200,250,0.2);
-	color:#F0F0F0;
+	color:#0F0C0C;
 }
 
 .footer{
@@ -85,3 +85,8 @@ margin-left: -400px;
 /* end wall */
 
 
+.page-friends .thumbnail{
+    background-color: white;
+    
+    margin-left:70px
+}
