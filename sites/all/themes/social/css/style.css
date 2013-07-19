@@ -39,8 +39,6 @@ body.front{
 	color:#F0F0F0;
 } 
 
-
-
 .main-container.container{
 	background: rgba(0,0,0, .6);
 	border: 1px solid #333;
@@ -54,16 +52,17 @@ body.front{
 
 }
 
-
 .main-container.container {
 background: rgba(0,0,0, .7);
 border: 1px solid #333;
 }
 
-
-.main-container.container.main-container.container{
-	background-color: #f2f2f2;
+#post-node-form{
+  width: 50%;
+  background-color: white;
+  margin: auto;
 }
+
 
 .html.not-front.logged-in.no-sidebars.page-wall.modal{
 position:relative;
@@ -91,9 +90,5 @@ margin-left: -400px;
 
 
 
-#post-node-form{
-  width: 50%;
-  background-color: white;
-  margin: auto;
-}
+
 
