@@ -40,7 +40,7 @@ function social_menu() {
     'type'=> MENU_CALLBACK,
   );
   $items['users'] = array(
-    'title' => 'Front Page',
+    'title' => 'Users',
     'page callback' => 'social_users',
     'access callback' => TRUE,
     'weight' => 0,
@@ -52,8 +52,61 @@ function social_menu() {
 }
 
 function social_users(){
-  $output=' ';
+  $output = '';
+  global $user, $base_url;
+  $theme_path = $base_url . '/' . drupal_get_path('theme', 'social');
   
+  $results = db_select('profile', 'n')
+      ->fields('n', array('uid'))
+      ->execute();
+  dpm($results);
+
+  $items = array();
+  $i = 0;
+
+  foreach ($results as $record) {
+    $profile = profile2_load_by_user();
+    $profile = reset($profile);
+    if (empty($profile) || empty($profile->field_nume))  {
+      continue;
+    }
+
+    if ($i % 3 == 0) {
+      $output .= "<div class='row-fluid'>";
+      $output .= '<div class="span12">';
+      $output .= '<ul class="thumbnails">';
+    }
+
+    $output .= '<li class="span4">';
+    $output .= '<div class="thumbnail">';
+
+    if (isset($profile->field_poza) && !empty($profile->field_poza)) {
+      $path = $profile->field_poza["und"][0]["uri"];
+      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path)); 
+    }
+    else{
+      $path = $theme_path . '/img/blank-profile-hi.png';
+      $output .= theme('image', array('width' => '220', 'path' => $path)); 
+    }
+    $output .= '<div class="caption">
+							<h3>';
+    @$output .= $profile->field_nume['und'][0]['value'] . " " . $profile->field_prenume['und'][0]['value'];
+    $output .= "</h3>
+							<p>
+								aaaaaaaaa
+							</p>
+						</div>
+					</div>
+				</li>";
+    $i++;
+    
+    if ($i%3 == 0 && $i != 0) {
+      $output .="        </ul>
+          </div>
+        </div>";
+    }
+  }
+
   return $output;
 }
 
@@ -69,49 +122,6 @@ function social_get_users($limit = 9){
   
   $results = $query->orderBy('cnt', 'DESC')
     ->execute();
-  
-  /* $results = array(
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-  );
-  */
 
   $i = 0;
   foreach($results as $record){
@@ -123,7 +133,7 @@ function social_get_users($limit = 9){
     $profile = reset($profile);
     
     @$path = $profile->field_poza['und']['0']['uri'];
-    $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $path));	
+    $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $path));	   
     if($i%3==0){
       $output.='<div class="row-fluid"></div>';   
     }
@@ -134,51 +144,6 @@ function social_get_users($limit = 9){
   }
 
   return $output;
-
-  $output['#prefix'] = '<div class="row-fluid">';
-  $output[1]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 0,
-                    );
-  $output[2]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 1,
-                    );
-  $output[3]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 2,
-                    );
-  $output['#suffix'] = '</div>';
-  $results = db_select('friends', 'f')
-      ->fields('f', array('uid'))
-
-      ->execute();
-
-  $items = array();
-  $i=1;
-  $j=1;
-  foreach ($results as $record) {
-
-    $node = node_load($record->uid);
-    $post = node_view($node, 'teaser');
-    $post = drupal_render($post);
-
-   if($i%3==0)
-      $j++;
-   $output[$j]['#markup'].=$post.' ';
-   if(($i++)==9)
-      break;
-  }
-
-
-  return $output;
-
 
 }
 
@@ -192,7 +157,11 @@ function social_front_page(){
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
+<<<<<<< HEAD
       '#markup' => social_get_users(),
+=======
+      '#markup' => '<div class="row-fluid2">'.social_get_users().'</div>',
+>>>>>>> f0a72687e2d92f3af54791dc56d061639badda77
       '#weight' => 0,
     );
 
@@ -312,7 +281,9 @@ function social_post_form(){
   global $user;
 
   $path = drupal_get_path('module', 'social');
+  drupal_add_library ( 'system' , 'ui.tabs' );
   drupal_add_js($path . '/social.js');
+
 
   module_load_include('inc', 'node', 'node.pages');
   $node_type = 'post';
@@ -338,12 +309,12 @@ function social_post_form(){
   $form['actions']['submit']['#attributes']['class'] = array('btn-large', 'btn-success');
 
   $links = "
-    <ul class='nav nav-tabs' id='post-options'>
-      <li class='active'>
-        <a href='#' rel='edit-body'><i class='icon-edit'></i>" . t('Update status') . "</a>
+    <ul id='post-options'>
+      <li>
+        <a href='#edit-body' rel='edit-body'><i class='icon-edit'></i>" . t('Update status') . "</a>
       </li>
       <li>
-        <a href='#' rel='edit-field-poza'><i class='icon-camera'></i>" . t('Upload image') . "</a>
+        <a href='#edit-field-poza' rel='edit-field-poza'><i class='icon-camera'></i>" . t('Upload image') . "</a>
       </li>
     </ul>";
 
