@@ -17,7 +17,7 @@ $profile = $profile['profile2'][$p->pid];
       ?>
     </h3>
     </span>
-      <span class="date_create"><?php echo 'Post Created on ' . $d; ?>
+      <span class="date_create"><?php echo 'Posted on ' . $d; ?>
       </span>
   </div>
     <div class="modal-body">
