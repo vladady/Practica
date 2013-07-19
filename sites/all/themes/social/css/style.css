@@ -13,8 +13,6 @@ body.front{
 	color:#FFF;
 }
 
-
-
 .main-container.container{
 	width: 85%;
 	background: rgba(100,200,250,0.2);
@@ -70,7 +68,7 @@ body.front{
 	position:relative;
 	z-index: 0;
 	width: 800px;
-	margin-left: -400px;
+	margin: -400px;
 }
 
 ul li.first{
