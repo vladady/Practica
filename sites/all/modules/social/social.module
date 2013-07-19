@@ -31,54 +31,55 @@ function social_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
-
+  
   $items['frontpage'] = array(
     'title' => 'Front Page',
     'page callback' => 'social_front_page',
     'access callback' => TRUE,
     'weight' => 0,
-    'type' => MENU_CALLBACK,
+    'type'=> MENU_CALLBACK,
   );
 
 
   return $items;
 }
 
-function social_get_users($limit = 9) {
-  $output = array();
+function social_get_users($limit = 9){
+  $output=array();
   $results = db_select('friends', 'f')
       ->fields('f', array('fid'))
       ->condition('f.uid', $user->uid, '=')
       ->execute();
+  
 }
 
-function social_front_page() {
+function social_front_page(){
   $output = '';
-
-  if (!user_is_logged_in()) {
+  
+  if(!user_is_logged_in()){
     $output['#prefix'] = '<div class="row-fluid">';
     $output['#suffix'] = '</div>';
-
+    
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
       '#markup' => social_get_users(),
       '#weight' => 0,
     );
-
+    
     $output['right'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
       '#weight' => 1,
-    );
-
+    ); 
+        
     $form = drupal_get_form('user_register_form');
     $output['right']['#markup'] = drupal_render($form);
   }
-  else {
+  else{
     drupal_goto('wall');
   }
-
+  
   return $output;
 }
 
@@ -138,7 +139,6 @@ function social_friend_list() {
     }
   }
 
-  
   return $output;
   return '';
 }
@@ -146,24 +146,26 @@ function social_friend_list() {
 function friend_requests() {
   $output = array();
   global $user;
-
+ 
   $query = db_select('friend_requests', 'fr');
   $query->addField('fr', 'from', 't');
   $results = $query->condition('fr.to', $user->uid, '=')
       ->execute();
 
   $items = array();
-
+ 
   foreach ($results as $record) {
-
+    
     $profile = profile2_load_by_user($record->t);
-    if (empty($profile)) {
+    if(empty($profile)) {
       continue;
     }
-
+    
     $profile = reset($profile);
     $p = profile2_view($profile, 'teaser');
     $items[] = drupal_render($p);
+    
+   
   }
 
 
@@ -206,7 +208,7 @@ function social_wall_posts() {
     '#theme' => 'item_list',
     '#items' => $items,
   );
-
+  
   $output['pager'] = array('#theme' => 'pager');
 
   return $output;
@@ -222,4 +224,5 @@ function social_logged_in() {
 function social_edit_post($pid = 1) {
   return $pid;
 }
+
 
