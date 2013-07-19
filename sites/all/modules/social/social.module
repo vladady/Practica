@@ -69,49 +69,6 @@ function social_get_users($limit = 9){
   
   $results = $query->orderBy('cnt', 'DESC')
     ->execute();
-  
-  /* $results = array(
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-    (object)array('uid' => 1, 'cnt' => 2),
-  );
-  */
 
   $i = 0;
   foreach($results as $record){
@@ -134,51 +91,6 @@ function social_get_users($limit = 9){
   }
 
   return $output;
-
-  $output['#prefix'] = '<div class="row-fluid">';
-  $output[1]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 0,
-                    );
-  $output[2]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 1,
-                    );
-  $output[3]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 2,
-                    );
-  $output['#suffix'] = '</div>';
-  $results = db_select('friends', 'f')
-      ->fields('f', array('uid'))
-
-      ->execute();
-
-  $items = array();
-  $i=1;
-  $j=1;
-  foreach ($results as $record) {
-
-    $node = node_load($record->uid);
-    $post = node_view($node, 'teaser');
-    $post = drupal_render($post);
-
-   if($i%3==0)
-      $j++;
-   $output[$j]['#markup'].=$post.' ';
-   if(($i++)==9)
-      break;
-  }
-
-
-  return $output;
-
 
 }
 
@@ -312,7 +224,9 @@ function social_post_form(){
   global $user;
 
   $path = drupal_get_path('module', 'social');
+  drupal_add_library ( 'system' , 'ui.tabs' );
   drupal_add_js($path . '/social.js');
+
 
   module_load_include('inc', 'node', 'node.pages');
   $node_type = 'post';
@@ -338,12 +252,12 @@ function social_post_form(){
   $form['actions']['submit']['#attributes']['class'] = array('btn-large', 'btn-success');
 
   $links = "
-    <ul class='nav nav-tabs' id='post-options'>
-      <li class='active'>
-        <a href='#' rel='edit-body'><i class='icon-edit'></i>" . t('Update status') . "</a>
+    <ul id='post-options'>
+      <li>
+        <a href='#edit-body' rel='edit-body'><i class='icon-edit'></i>" . t('Update status') . "</a>
       </li>
       <li>
-        <a href='#' rel='edit-field-poza'><i class='icon-camera'></i>" . t('Upload image') . "</a>
+        <a href='#edit-field-poza' rel='edit-field-poza'><i class='icon-camera'></i>" . t('Upload image') . "</a>
       </li>
     </ul>";
 
