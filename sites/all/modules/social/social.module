@@ -205,7 +205,7 @@ function social_friend_list() {
     }
 
     if ($i % 3 == 0) {
-      $output .= "<div class='row-fluid'>";
+      $output .= '<div class="row-fluid">';
       $output .= '<div class="span12">';
       $output .= '<ul class="thumbnails">';
     }
@@ -243,38 +243,90 @@ function social_friend_list() {
   return $output;
 
 }
-
-function friend_requests() {
-  $output = array();
+function add($friend_r){
   global $user;
+  
+  db_insert('friends')
+        ->fields(array(
+          'uid'=> $user->uid,
+          'fid'=> $friend_r,
+          
+        ))
+      -> execute();
+  
+  db_insert('friends')
+        ->fields(array(
+          'uid'=> $friend_r,
+          'fid'=> $user->uid,
+          
+        ))
+      -> execute();
+ 
+  
+}
 
+function rem(){
+  
+}
+function friend_requests() {
+  $output = '';
+  global $user, $base_url;
+  $theme_path = $base_url . '/' . drupal_get_path('theme', 'social');
   $query = db_select('friend_requests', 'fr');
   $query->addField('fr', 'from', 't');
   $results = $query->condition('fr.to', $user->uid, '=')
       ->execute();
-
+  $i=0;
   $items = array();
-
+  
   foreach ($results as $record) {
 
     $profile = profile2_load_by_user($record->t);
-    if(empty($profile)) {
+   $profile = reset($profile);
+   
+   
+    if (empty($profile) || empty($profile->field_nume))  {
       continue;
     }
 
-    $profile = reset($profile);
-    $p = profile2_view($profile, 'teaser');
-    $items[] = drupal_render($p);
+    if ($i % 3 == 0) {
+      $output .= '<div class="row-fluid">';
+      $output .= '<div class="span12">';
+      $output .= '<ul class="thumbnails">';
+    }
 
+    $output .= '<li class="span4">';
+    $output .= '<div class="thumbnail">';
 
+    if (isset($profile->field_poza) && !empty($profile->field_poza)) {
+      $path = $profile->field_poza["und"][0]["uri"];
+      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path)); 
+    }
+    else{
+      $path = $theme_path . '/img/blank-profile-hi.png';
+      $output .= theme('image', array('width' => '220', 'path' => $path)); 
+    }
+    $output .= '<div class="caption">
+							<h3>';
+    @$output .= $profile->field_nume['und'][0]['value'] . " " . $profile->field_prenume['und'][0]['value'];
+    $output .= '</h3>
+							<p>
+              ';
+		$output .=  '<button type="button" onclick="add($profile->uid)">Yes</button> 
+                 <button type="button" onclick="rem()">No</button>';
+		$output .="	</form> </p>
+						</div>
+					</div>
+				</li>";
+    $i++;
+    
+    if ($i%3 == 0 && $i != 0) {
+      $output .="        </ul>
+          </div>
+        </div>";
+    }
   }
 
-
-  $output['friends'] = array(
-    '#theme' => 'item_list',
-    '#items' => $items,
-    '#type' => 'ul',
-  );
 
   return $output;
   return '';
