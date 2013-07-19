@@ -151,13 +151,13 @@ function social_front_page(){
   $output = '';
 
   if(!user_is_logged_in()){
-    $output['#prefix'] = '<div class="span12"> <div class="row-fluid">';
-    $output['#suffix'] = '</div></div>';
+    $output['#prefix'] = '<div class="row-fluid">';
+    $output['#suffix'] = '</div>';
 
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
-      '#markup' => social_get_users(),
+      '#markup' => '<div class="row-fluid2">'.social_get_users().'</div>',
       '#weight' => 0,
     );
 
