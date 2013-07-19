@@ -39,59 +39,102 @@ function social_menu() {
     'weight' => 0,
     'type'=> MENU_CALLBACK,
   );
+  $items['users'] = array(
+    'title' => 'Front Page',
+    'page callback' => 'social_users',
+    'access callback' => TRUE,
+    'weight' => 0,
+    'type'=> MENU_CALLBACK,
+  );
 
 
   return $items;
 }
-/*
-  function social_get_users($limit = 9){
-  global $user;
-  $output['#prefix'] = '<div class="row-fluid">';
-  $output[1]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 0,
-                    );
-  $output[2]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 1,
-                    );
-  $output[3]=array(
-                    '#prefix'=>'<div class=span4">',
-                    '#markup'=>'',
-                    '#suffix'=>'</div>',
-                    '#weight' => 2,
-                    );
-  $output['#suffix'] = '</div>';
-  $results = db_select('friends', 'f')
-      ->fields('f', array('uid'))
-      
-      ->execute();
 
-  $items = array();
-  $i=1;
-  $j=1;
-  foreach ($results as $record) {
+function social_users(){
+  $output=' ';
+  
+  return $output;
+}
+
+function social_get_users($limit = 9){
+  global $user;
+  $output = '';
+  $query = db_select('friends', 'f')
+    ->fields('f', array('uid'))
+    ->groupBy('f.uid');
+  
+  $query->addExpression('COUNT(f.uid)', 'cnt');
+  
+  $results = $query->orderBy('cnt', 'DESC')
+    ->execute();
+  
+ /* $results = array(
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+    (object)array('uid' => 1, 'cnt' => 2),
+  );*/
+  
+
+  $i = 0;
+  foreach($results as $record){
+    //dpm($record);
+    $profile = profile2_load_by_user($record->uid);
+    if(empty($profile)){
+      continue;
+    }
+    $profile = reset($profile);
     
-    $node = node_load($record->uid);
-    $post = node_view($node, 'teaser');
-    $post = drupal_render($post);
-    
-   if($i%3==0)
-      $j++;
-   $output[$j]['#markup'].=$post.' ';
-   if(($i++)==9)
+    @$path = $profile->field_poza['und']['0']['uri'];
+    $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $path));	
+    if($i%5==0){
+      $output.='<div class="row-fluid"></div>';   
+    }
+    $i++;
+    $output .= $img;
+    if($i==30)
       break;
   }
-  
 
   return $output;
-  
 }
-*/
+
 function social_front_page(){
   $output = '';
   
@@ -102,7 +145,7 @@ function social_front_page(){
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
-     // '#markup' => social_get_users(),
+      '#markup' => social_get_users(),
       '#weight' => 0,
     );
     
@@ -145,7 +188,6 @@ function social_friend_list() {
     $items[] = drupal_render($p);
 
   }
-
 
   $output['friends'] = array(
     '#theme' => 'item_list',
