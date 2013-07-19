@@ -14,22 +14,25 @@ body.front{
 }
 
 
-.navbar .container{
-	width: 65%;
-}
 
 
 .main-container.container{
-	width: 65%;
+	width: 85%;
+	background: rgba(100,200,250,0.2);
+	color:#F0F0F0;
 }
 
 .footer{
-	width: 65%;
+	width: 85%;
 	margin-top: 15px;
 	padding: 9px 0 36px;
 	border-top: 1px solid #333;
 }
 /*Bara de Navigare*/
+.navbar .container{
+	width: 85%;
+}
+
 .navbar-inverse .navbar-inner{
 	background:#48a4cc;
 	height: 45px;
@@ -39,23 +42,13 @@ body.front{
 	color:#F0F0F0;
 } 
 
-.main-container.container{
-	background: rgba(0,0,0, .6);
-	border: 1px solid #333;
-	color:#F0F0F0;
-}
-
-
 .navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus{
 	background-color: #2294C0;
 	height: 25px;
 
 }
 
-.main-container.container {
-background: rgba(0,0,0, .7);
-border: 1px solid #333;
-}
+/* end bara de navigare*/
 
 #post-node-form{
   width: 50%;
