@@ -4,7 +4,7 @@
  */
 body.front{
 	background-color: transparent;
-	background: url('../img/3-background.jpg') no-repeat center top;
+	background: url('../img/mountain-background.jpg') no-repeat center top;
 	-webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
@@ -12,35 +12,12 @@ body.front{
  	height: 65px;
 	color:#FFF;
 }
-/*Formular*/
-.user-info-from-cookie{
-	background: rgba(0, 0, 0, 0.6); 
-	padding: 10px;
-	margin-left: 100px;
-	margin-top: 90px;
-	margin-right: 10px;
-}
-.password-strength-title{
-	margin-left: -35px;
 
-
-}
-
-.password-indicator{
-	width: 150px;
-	margin-left: -35px;
-}
-
-.control-group form-type-textfield form-item-name form-item{
-	width: 250px;
-	margin-left: 210px;
-}
-/* end Formular*/
 
 
 .main-container.container{
 	width: 85%;
-	background: rgba(100,200,250,0.1);
+	background: rgba(100,200,250,0.2);
 	color:#F0F0F0;
 }
 
@@ -82,7 +59,7 @@ color:black;
   background-color: white;
   margin: auto;
   width: 795px;
-  margin-left: 185px;
+  margin-left: auto;
 }
 
 .control-label{
@@ -94,19 +71,11 @@ color:black;
 }
 
 /* wall */
-
-.html.not-front.logged-in.no-sidebars.page-wall.modal{
-	position:relative;
-	z-index: 0;
-	width: 800px;
-	margin-left: -400px;
-
 .page-wall .modal{
 	position:relative;
 	z-index: 0;
 	width: 800px;
-	margin: -400px;
-
+	margin-left: -414px;
 }
 
 ul li.first{
@@ -125,7 +94,6 @@ ul li.last{
 	margin-top: -35px;
 	padding: 10px;
 }
-
 
 .user-name{
 	color:black;
