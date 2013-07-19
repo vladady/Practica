@@ -63,7 +63,7 @@ border: 1px solid #333;
   margin: auto;
 }
 
-
+/* wall */
 .html.not-front.logged-in.no-sidebars.page-wall.modal{
 position:relative;
 z-index: 0;
@@ -89,6 +89,6 @@ margin-left: -400px;
 }
 
 
-
+/* end wall */
 
 
