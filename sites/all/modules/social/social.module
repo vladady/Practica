@@ -238,10 +238,12 @@ function social_get_buttons($idu){
     return 'friends';
   }
 
-  $request_received = db_select('friends_requests', 'f')
-    ->fields('f', array('to','from'))
-    ->condition('f.to', $idu)
-    ->condition('f.from',$user->uid)
+  $query = db_select('friend_requests', 'f');
+    //->fields('f', array('to','from'))
+  $query->addField('f', 'to', 'source');
+  $query->addField('f', 'from', 'target');
+  $request_received = $query ->condition('source', $idu)
+    ->condition('target',$user->uid)
     ->execute()
     ->rowCount();
 
@@ -249,10 +251,12 @@ function social_get_buttons($idu){
       return social_buttons($idu, 'respond');
     }
 
-  $request_sent = db_select('friends_requests', 'f')
-    ->fields('f', array('to','from'))
-    ->condition('f.to', $user->uid)
-    ->condition('f.from',$idu)
+  $query = db_select('friend_requests', 'f');
+    //->fields('f', array('to','from'))
+  $query->addField('f', 'to', 'source');
+  $query->addField('f', 'from', 'target');
+  $request_sent = $query->condition('source', $user->uid)
+    ->condition('target',$idu)
     ->execute()
     ->rowCount();
 
