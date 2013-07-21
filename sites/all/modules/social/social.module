@@ -38,14 +38,20 @@ function social_menu() {
     'weight' => 0,
     'type'=> MENU_CALLBACK,
   );
-  
+
+  $items['search/autocomplete'] = array(
+    'title' => 'Social search autocomplete',
+    'page callback' => '_social_search_autocomplete',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
   $items['add'] = array(
     'title' => 'Add friend',
     'page callback' => 'social_add_friend',
     'access callback' => 'social_logged_in',
     'type' => MENU_CALLBACK,
   );
-
 
   return $items;
 }
@@ -91,11 +97,29 @@ function social_users_list(){
   $output = '';
   global $user, $base_url;
   $theme_path = $base_url . '/' . drupal_get_path('theme', 'social');
-  
-  $results = db_select('profile', 'n')
-      ->fields('n', array('uid'))
-      ->condition('uid', $user->uid, '<>')
-      ->execute();
+
+  if(isset($_GET['search']) && !empty($_GET['search'])){
+    $search = $_GET['search'];
+    $results = db_query("
+      select p.pid, p.uid as uid, n.field_nume_value, pr.field_prenume_value from profile p
+      join field_data_field_nume n on n.entity_id = p.pid
+      join field_data_field_prenume pr on pr.entity_id = p.pid
+      where
+      (
+        lower(n.field_nume_value) like :pattern
+        OR lower(pr.field_prenume_value) like :pattern
+        OR lower(CONCAT(n.field_nume_value, ' ', pr.field_prenume_value)) LIKE :pattern
+      )
+      AND p.uid <> :uid",
+      array(':pattern' => db_like($search) . '%', ':uid' => $user->uid)
+    );
+  }
+  else{
+    $results = db_select('profile', 'n')
+        ->fields('n', array('uid'))
+        ->condition('uid', $user->uid, '<>')
+        ->execute();
+  }
 
   $items = array();
   $i = 0;
@@ -118,24 +142,24 @@ function social_users_list(){
 
     if (isset($profile->field_poza) && !empty($profile->field_poza)) {
       $path = $profile->field_poza["und"][0]["uri"];
-      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path)); 
+      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path));
     }
     else{
       $path = $theme_path . '/img/blank-profile-hi.png';
-      $output .= theme('image', array('width' => '220', 'path' => $path)); 
+      $output .= theme('image', array('width' => '220', 'path' => $path));
     }
     $output .= '<div class="caption">
 							<h3>';
     @$output .= $profile->field_nume['und'][0]['value'] . " " . $profile->field_prenume['und'][0]['value'];
-    $output .= "</h3>
-							<p>".social_get_buttons($record->uid)
-								
-						."	</p>
+    $output .= "</h3>"
+						. "<p>"
+            . social_get_buttons($record->uid)
+						."</p>
 						</div>
 					</div>
 				</li>";
     $i++;
-    
+
     if ($i%3 == 0 && $i != 0) {
       $output .="        </ul>
           </div>
@@ -153,9 +177,9 @@ function social_get_users($limit = 9){
   $query = db_select('friends', 'f')
     ->fields('f', array('uid'))
     ->groupBy('f.uid');
-  
+
   $query->addExpression('COUNT(f.uid)', 'cnt');
-  
+
   $results = $query->orderBy('cnt', 'DESC')
     ->execute();
 
@@ -167,11 +191,11 @@ function social_get_users($limit = 9){
       continue;
     }
     $profile = reset($profile);
-    
+
     @$path = $profile->field_poza['und']['0']['uri'];
-    $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $path));	   
+    $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $path));
     if($i%3==0){
-      $output.='<div class="row-fluid"></div>';   
+      $output.='<div class="row-fluid"></div>';
     }
     $i++;
     $output .= $img;
@@ -185,53 +209,53 @@ function social_get_users($limit = 9){
 
 function social_buttons($uid, $type = 'add'){
   $output = '';
-  
+
   switch($type){
     case 'add':
       $output .=  '<button type="button" class="request-button" data-type="add" data-id="' . $uid. '">Add as friend</button>';
       break;
-    
+
     case 'respond':
-      $output .=  '<button type="button" class="request-button" data-type="accept" data-id="' . $uid. '">Accept</button> 
+      $output .=  '<button type="button" class="request-button" data-type="accept" data-id="' . $uid. '">Accept</button>
                  <button type="button" class="request-button" data-type="deny" data-id="' . $uid . '">Deny</button>';
 		  break;
   }
-  
-  return $output; 
+
+  return $output;
 }
 
 function social_get_buttons($idu){
   global $user;
   $output = '';
-  
+
   $is_friend = db_select('friends', 'f')
       ->fields('f', array('uid','fid'))
-      ->condition('f.uid', $user->uid) 
+      ->condition('f.uid', $user->uid)
       ->condition('f.fid',$idu)
       ->execute()
-      ->rowCount(); 
+      ->rowCount();
   if($is_friend){
     return 'friends';
   }
-  
+
   $request_received = db_select('friends_requests', 'f')
     ->fields('f', array('to','from'))
-    ->condition('f.to', $idu) 
+    ->condition('f.to', $idu)
     ->condition('f.from',$user->uid)
     ->execute()
     ->rowCount();
-  
+
     if($request_received){
       return social_buttons($idu, 'respond');
     }
-    
+
   $request_sent = db_select('friends_requests', 'f')
     ->fields('f', array('to','from'))
-    ->condition('f.to', $user->uid) 
+    ->condition('f.to', $user->uid)
     ->condition('f.from',$idu)
     ->execute()
-    ->rowCount(); 
-  
+    ->rowCount();
+
   if($request_sent){
     return 'Request already sent';
   }
@@ -244,7 +268,7 @@ function social_friend_list() {
   $output = '';
   global $user, $base_url;
   $theme_path = $base_url . '/' . drupal_get_path('theme', 'social');
-  
+
   $results = db_select('friends', 'f')
       ->fields('f', array('fid'))
       ->condition('f.uid', $user->uid, '=')
@@ -271,24 +295,24 @@ function social_friend_list() {
 
     if (isset($profile->field_poza) && !empty($profile->field_poza)) {
       $path = $profile->field_poza["und"][0]["uri"];
-      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path)); 
+      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path));
     }
     else{
       $path = $theme_path . '/img/blank-profile-hi.png';
-      $output .= theme('image', array('width' => '220', 'path' => $path)); 
+      $output .= theme('image', array('width' => '220', 'path' => $path));
     }
     $output .= '<div class="caption">
 							<h3>';
     @$output .= $profile->field_nume['und'][0]['value'] . " " . $profile->field_prenume['und'][0]['value'];
     $output .= "</h3>
 							<p>
-								
+
 							</p>
 						</div>
 					</div>
 				</li>";
     $i++;
-    
+
     if ($i%3 == 0 && $i != 0) {
       $output .="        </ul>
           </div>
@@ -331,8 +355,8 @@ function _social_remove($friend_r){
 
 function social_add_friend(){
   $type = isset($_POST['type']) ? $_POST['type'] : '';
-  $friend_r = isset($_POST['fid']) ? $_POST['fid'] : 0;  
-  
+  $friend_r = isset($_POST['fid']) ? $_POST['fid'] : 0;
+
   switch($type) {
     case 'accept':
       if(!$friend_r){
@@ -341,34 +365,34 @@ function social_add_friend(){
       _social_add($friend_r);
       _social_remove($friend_r);
       break;
-      
+
     case 'deny':
       _social_remove($friend_r);
       break;
-  }  
+  }
 }
 
 function friend_requests() {
   $output = '';
   global $user, $base_url;
   $theme_path = $base_url . '/' . drupal_get_path('theme', 'social');
-    
+
   $path = drupal_get_path('module', 'social');
   drupal_add_library ( 'system' , 'ui.tabs' );
   drupal_add_js($path . '/social.js');
-  
+
   $i=0;
   $items = array();
-  
+
   $query = db_select('friend_requests', 'fr');
   $query->addField('fr', 'from', 'f');
   $results = $query->condition('fr.to', $user->uid, '=')
     ->execute();
-  
+
   foreach ($results as $record) {
     $profile = profile2_load_by_user($record->f);
     $profile = reset($profile);
-   
+
     if (empty($profile) || empty($profile->field_nume))  {
       continue;
     }
@@ -384,11 +408,11 @@ function friend_requests() {
 
     if (isset($profile->field_poza) && !empty($profile->field_poza)) {
       $path = $profile->field_poza["und"][0]["uri"];
-      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path)); 
+      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path));
     }
     else{
       $path = $theme_path . '/img/blank-profile-hi.png';
-      $output .= theme('image', array('width' => '220', 'path' => $path)); 
+      $output .= theme('image', array('width' => '220', 'path' => $path));
     }
     $output .= '<div class="caption">
 							<h3>';
@@ -396,16 +420,16 @@ function friend_requests() {
     $output .= '</h3>
 							<p>
               ';
-		$output .=  '<button type="button" class="request-button" 
-                  data-type="accept" data-id="' . $record->f . '">Yes</button> 
-                 <button type="button" class="request-button" data-type="deny" 
+		$output .=  '<button type="button" class="request-button"
+                  data-type="accept" data-id="' . $record->f . '">Yes</button>
+                 <button type="button" class="request-button" data-type="deny"
                  data-id="' . $record->f . '">No</button>';
 		$output .="	</form> </p>
 						</div>
 					</div>
 				</li>";
     $i++;
-    
+
     if ($i%3 == 0 && $i != 0) {
       $output .="        </ul>
           </div>
@@ -473,7 +497,63 @@ function social_post_form(){
 
 function social_form_alter(&$form, &$form_state, $form_id) {
   if($form_id == 'post_node_form'){
+    //Trick for file field
+    form_load_include($form_state, 'inc', 'node', 'node.pages');
+
+    $form['body']['und'][0]['value']['#rows'] = 4;
     $form['actions']['submit']['#submit'][] = 'social_post_form_submit';
+  }
+
+  if($form_id == 'user_register_form') {
+    $form['heading'] = array(
+      '#markup' => '<h1>' . t('Join the cloud.') . '</h1>',
+      '#weight' => -20,
+    );
+
+    $items = array('name' => 'user', 'mail' => 'envelope', 'pass' => 'lock');
+    foreach($items as $key => $icon){
+      $form['account'][$key]['#field_prefix'] = '<div class="input-prepend">'
+        . '<span class="add-on"><i class="icon-' . $icon . '"></i></span>';
+      $form['account'][$key]['#field_suffix'] = '</div>';
+      $form['account'][$key]['#size'] = 40;
+
+      unset($form['account'][$key]['#description']);
+    }
+
+    $form['account']['pass']['#type'] = 'password';
+    $form['account']['pass']['#title'] = t('Password');
+    $form['actions']['submit']['#attributes']['class'] = array('btn-success', 'btn-large', 'btn-block');
+  }
+
+  if($form_id == 'user_login'){
+    $items = array('name' => 'user', 'pass' => 'lock');
+    foreach($items as $key => $icon){
+      $form[$key]['#field_prefix'] = '<div class="input-prepend">'
+        . '<span class="add-on"><i class="icon-' . $icon . '"></i></span>';
+
+      $form[$key]['#field_suffix'] = '</div>';
+      $form[$key]['#size'] = 40;
+
+      unset($form['account'][$key]['#description']);
+    }
+
+    $form['actions']['submit']['#attributes']['class'] = array('btn-info', 'btn-large', 'btn-block');
+  }
+
+ switch ($form_id) {
+    case 'user_login':
+    case 'user_register_form':
+      // Add ajax wrapper to form.
+      $html_id = str_replace('_', '-', $form_id);
+      $form['#prefix'] = '<div id="ajax-' . $html_id . '-wrapper">';
+      $form['#suffix'] = '</div>';
+      // Add ajax functionality to form submit button.
+      $form['actions']['submit']['#ajax'] = array(
+        'callback' => '_social_ajax_callback',
+        'wrapper' => 'ajax-' . $html_id . '-wrapper',
+        'event' => 'click',
+      );
+      break;
   }
 }
 
@@ -485,6 +565,9 @@ function social_wall_posts() {
   $limit = 4;
   $output = array();
   global $user;
+
+  $title = '';
+  drupal_set_title($title);
 
   $results = db_select('node', 'n');
   $results->join('friends', 'f', 'f.fid = n.uid OR n.uid = ' . $user->uid);
@@ -498,7 +581,6 @@ function social_wall_posts() {
 
   $items = array();
   foreach ($results as $record) {
-
     $node = node_load($record->nid);
     $post = node_view($node, 'teaser');
     $post = drupal_render($post);
@@ -521,6 +603,50 @@ function social_wall_posts() {
   return $output;
 }
 
+function social_search_form(){
+  global $base_url;
+  $form = array();
+  $form['#method'] = 'get';
+  $form['#action'] = $base_url . '/userslist';
+  $form['#attributes']['class'][] = 'nav-search-form';
+
+  $form['search'] = array(
+    '#type' => 'textfield',
+    '#autocomplete_path' => 'search/autocomplete',
+    '#attributes' => array(
+      'placeholder' => 'Search for people',
+    ),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Search',
+  );
+
+  return $form;
+}
+
+function _social_search_autocomplete($string){
+  global $user;
+  $results = db_query("
+    select p.pid, n.field_nume_value, pr.field_prenume_value from profile p
+    join field_data_field_nume n on n.entity_id = p.pid
+    join field_data_field_prenume pr on pr.entity_id = p.pid
+    where lower(n.field_nume_value) like :pattern
+    OR lower(pr.field_prenume_value) like :pattern
+    AND p.uid <> :uid",
+    array(':pattern' => db_like($string) . '%', ':uid' => $user->uid)
+  );
+
+  $matches = array();
+  foreach($results as $record){
+    $full_name = $record->field_nume_value . ' ' . $record->field_prenume_value;
+    $matches[$full_name] = $full_name;
+  }
+
+  drupal_json_output($matches);
+}
+
 /**
  * Helper function to return logged in
  * @global type $user
@@ -531,4 +657,44 @@ function social_logged_in() {
   if ($user->uid)
     return TRUE;
   return FALSE;
+}
+
+function social_page_alter(&$page) {
+  $form  = drupal_get_form('social_search_form');
+  $page['navigation'] = array(
+    '#markup' => drupal_render($form),
+  );
+  //dpm($page);
+  if(user_is_logged_in()){
+    return;
+  }
+
+  $content = '<ul class="nav pull-right">';
+  $content .= '<li class="dropdown">';
+  $content .= '<a class="dropdown-toggle" href="#" data-toggle="dropdown">' . t('Sign in') . ' <strong class="caret"></strong></a>';
+  $content .= '<div class="dropdown-menu embedded-form">' . drupal_render(drupal_get_form('user_login')) . '</div>';
+  $content .= '</li>';
+
+  $content .= '</ul>';
+  $page['navigation'] = array('#markup' => $content);
+}
+
+function _social_ajax_callback($form, $form_state) {
+  ctools_include('ajax');
+  ctools_add_js('ajax-responder');
+
+  if (form_get_errors()) {
+    return $form; // Reload form if it didn't pass validation.
+  }
+
+  if ($form['#id'] === 'user-login') {
+    drupal_set_message(check_plain('Successful login'));
+  }
+
+  $commands = array();
+  $commands[] = ctools_ajax_command_reload();
+  return array(
+    '#type' => 'ajax',
+    '#commands' => $commands
+  );
 }
