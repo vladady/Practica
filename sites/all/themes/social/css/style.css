@@ -20,13 +20,13 @@ body.front{
 	margin-left: 60px;
 }
 
-.row-fluid{
-
+body.front .row-fluid{
 	padding: 40px;
 }
+
 /*Formular*/
 .user-info-from-cookie{
- 	 width: 290px;
+ 	width: 290px;
 	background: rgba(0, 0, 0, 0.6);
 	padding: 10px;
  	padding-left: 20px;
