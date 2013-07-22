@@ -20,7 +20,7 @@ body.front{
 }
 /*Formular*/
 .user-info-from-cookie{
-  width: 300px;
+  width: 335px;
 	background: rgba(0, 0, 0, 0.6);
 	padding: 10px;
   padding-left: 20px;
@@ -88,11 +88,11 @@ div.password-strength-text{
 }
 
 .page-frontpage .navbar-inverse .navbar-inner{
-  background: transparent;
+  background:transparent;
 }
 .navbar-inverse .navbar-inner{
 	/*background:#48a4cc;*/
-  border-bottom: 0px;
+  	border-bottom: 0px;
 	height: 45px;
 }
 
@@ -106,6 +106,9 @@ div.password-strength-text{
 
 }
 
+#edit-search--2{
+	margin-top: 13px;
+}
 /* end bara de navigare*/
 
 .date_create {
@@ -199,6 +202,8 @@ ul li.last{
 /* page profile */
 .page-profile-main .content{
 	color: black;
+	padding: 20px;
+	width: 70%;
 }
 
 .page-profile-main .image-widget-data{
@@ -213,3 +218,38 @@ ul li.last{
 	color:#0088CC;
 }
 /* end page profile */
+
+
+/* requests */
+
+.page-requests .thumbnail{
+    background-color: white ;
+   margin-left: auto;
+     
+   margin-left: 35px;
+   border-radius : 12px;
+   height: 325px;
+}
+
+
+.page-friends .thumbnail {
+
+ background-color: white ;
+
+margin-left: auto;
+ border-radius : 12px;   
+   margin-left: 35px;
+   height: 300px;
+}
+
+.page-userslist .thumbnail
+{
+    
+    background-color: white ;
+
+margin-left: auto;
+ border-radius : 12px;   
+   margin-left: 35px;
+   height: 300px;
+    margin-right: auto ;
+}
