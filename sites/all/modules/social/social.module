@@ -565,9 +565,9 @@ function social_form_alter(&$form, &$form_state, $form_id) {
     foreach($items as $key => $icon){
       $form['account'][$key]['#field_prefix'] = '<div class="input-prepend">'
         . '<span class="add-on"><i class="icon-' . $icon . '"></i></span>';
+      $form['account'][$key]['#attributes']['class'] = array('span');
       $form['account'][$key]['#field_suffix'] = '</div>';
-      $form['account'][$key]['#size'] = 40;
-
+      $form['account'][$key]['#size'] = 30;
       unset($form['account'][$key]['#description']);
     }
 
