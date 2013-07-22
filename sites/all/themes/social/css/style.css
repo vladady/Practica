@@ -88,11 +88,11 @@ div.password-strength-text{
 }
 
 .page-frontpage .navbar-inverse .navbar-inner{
-  background: transparent;
+  
 }
 .navbar-inverse .navbar-inner{
-	/*background:#48a4cc;*/
-  border-bottom: 0px;
+	background:#48a4cc;
+  	border-bottom: 0px;
 	height: 45px;
 }
 
