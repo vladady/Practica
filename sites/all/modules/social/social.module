@@ -141,11 +141,11 @@ function social_users_list(){
 
     if (isset($profile->field_poza) && !empty($profile->field_poza)) {
       $path = $profile->field_poza["und"][0]["uri"];
-      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path));
+      $output .= '<div class="users-photo">'.theme('image_style', array('style_name' => 'medium', 'path' => $path)).'</div>';
     }
     else{
       $path = $theme_path . '/img/blank-profile-hi.png';
-      $output .= theme('image', array('width' => '220', 'path' => $path));
+      $output .= '<div class="users-photo">'.theme('image', array('width' => '220', 'path' => $path)).'</div>';
     }
     $output .= '<div class="caption">
 							<h3>';
@@ -312,11 +312,11 @@ function social_friend_list() {
 
     if (isset($profile->field_poza) && !empty($profile->field_poza)) {
       $path = $profile->field_poza["und"][0]["uri"];
-      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path));
+      $output .= '<div class="users-photo">'.theme('image_style', array('style_name' => 'medium', 'path' => $path)).'</div>';
     }
     else{
       $path = $theme_path . '/img/blank-profile-hi.png';
-      $output .= theme('image', array('width' => '220', 'path' => $path));
+      $output .= '<div class="users-photo">'.theme('image', array('width' => '220', 'path' => $path)).'</div>';
     }
     $output .= '<div class="caption">
 							<h3>';
@@ -376,11 +376,11 @@ function friend_requests() {
 
     if (isset($profile->field_poza) && !empty($profile->field_poza)) {
       $path = $profile->field_poza["und"][0]["uri"];
-      $output .= theme('image_style', array('style_name' => 'medium', 'path' => $path));
+      $output .= '<div class="users-photo">'.theme('image_style', array('style_name' => 'medium', 'path' => $path)).'</div>';
     }
     else{
       $path = $theme_path . '/img/blank-profile-hi.png';
-      $output .= theme('image', array('width' => '220', 'path' => $path));
+      $output .= '<div class="users-photo">'.theme('image', array('width' => '220', 'path' => $path)).'</div>';
     }
     $output .= '<div class="caption">
 							<h3>';
