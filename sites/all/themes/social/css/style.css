@@ -88,11 +88,11 @@ div.password-strength-text{
 }
 
 .page-frontpage .navbar-inverse .navbar-inner{
-  background: transparent;
+  
 }
 .navbar-inverse .navbar-inner{
-	/*background:#48a4cc;*/
-  border-bottom: 0px;
+	background:#48a4cc;
+  	border-bottom: 0px;
 	height: 45px;
 }
 
@@ -212,3 +212,26 @@ ul li.last{
 
 /* end page profile */
 
+<<<<<<< HEAD
+
+/* requests */
+
+.page-requests .thumbnail{
+    background-color: white ;
+   margin-left: auto;
+     
+   margin-left: 35px;
+   border-radius : 12px;
+}
+
+
+.page-friends .thumbnail {
+
+ background-color: white ;
+
+margin-left: auto;
+ border-radius : 12px;   
+   margin-left: 35px;
+}
+=======
+>>>>>>> 4f92d18cb98094bdc69adae0825deddcfae517a5
