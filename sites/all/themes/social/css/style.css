@@ -206,3 +206,24 @@ ul li.last{
 }
 
 /* end page profile */
+
+
+/* requests */
+
+.page-requests .thumbnail{
+    background-color: white ;
+   margin-left: auto;
+     
+   margin-left: 35px;
+   border-radius : 12px;
+}
+
+
+.page-friends .thumbnail {
+
+ background-color: white ;
+
+margin-left: auto;
+ border-radius : 12px;   
+   margin-left: 35px;
+}
