@@ -68,14 +68,7 @@ function social_front_page(){
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
-
-      '#markup' => '<div class="row-fluid2"><p></p>'.social_get_users().'</div>',
-
-
-      '#markup' => social_get_users(),
-
-      '#markup' => '<div class="row-fluid2">'.social_get_users().'</div>',
-
+      '#markup' => '<div class="row-fluid">'.social_get_users().'</div>',
       '#weight' => 0,
     );
 
@@ -209,7 +202,7 @@ function social_get_users($limit = 9){
       $output.='<div class="row-fluid"></div>';
     }
     $i++;
-    $output .= $img;
+    $output .='<div class="span3 pozefront">'. $img.'</div>';
     if($i==18)
       break;
   }
@@ -565,9 +558,9 @@ function social_form_alter(&$form, &$form_state, $form_id) {
     foreach($items as $key => $icon){
       $form['account'][$key]['#field_prefix'] = '<div class="input-prepend">'
         . '<span class="add-on"><i class="icon-' . $icon . '"></i></span>';
+      $form['account'][$key]['#attributes']['class'] = array('span');
       $form['account'][$key]['#field_suffix'] = '</div>';
-      $form['account'][$key]['#size'] = 40;
-
+      $form['account'][$key]['#size'] = 30;
       unset($form['account'][$key]['#description']);
     }
 
