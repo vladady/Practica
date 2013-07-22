@@ -1,0 +1,934 @@
+<?php
+
+/**
+ * @file
+ * Implements the LikeBtn module.
+ */
+
+// Module name.
+define('LIKEBTN_MODULE_NAME', 'likebtn');
+
+// Views wisget display options.
+define('LIKEBTN_VIEWS_WIDGET_DISPLAY_ONLY', 1);
+define('LIKEBTN_VIEWS_WIDGET_FULL', 2);
+
+// LikeBtn plans.
+define('LIKEBTN_PLAN_FREE', 0);
+define('LIKEBTN_PLAN_PLUS', 1);
+define('LIKEBTN_PLAN_PRO', 2);
+define('LIKEBTN_PLAN_VIP', 3);
+
+define('LIKEBTN_SETTINGS', serialize(array(
+    "lang"                   => array("default" => "en"),
+    "share_enabled"          => array("default" => TRUE),
+    "show_like_label"        => array("default" => TRUE),
+    "show_dislike_label"     => array("default" => FALSE),
+    "dislike_share"          => array("default" => FALSE),
+    "dislike_enabled"        => array("default" => TRUE),
+    "counter_clickable"      => array("default" => FALSE),
+    "counter_type"           => array("default" => "number"),
+    "display_only"           => array("default" => FALSE),
+    "substract_dislikes"     => array("default" => FALSE),
+    "unlike_allowed"         => array("default" => TRUE),
+    "style"                  => array("default" => 'white'),
+    "addthis_pubid"          => array("default" => ''),
+    "addthis_service_codes"  => array("default" => ''),
+    "show_copyright"         => array("default" => TRUE),
+    "popup_enabled"          => array("default" => TRUE),
+    "popup_position"         => array("default" => 'top'),
+    "popup_style"            => array("default" => 'light'),
+    "i18n_like"              => array("default" => ''),
+    "i18n_dislike"           => array("default" => ''),
+    "i18n_like_tooltip"      => array("default" => ''),
+    "i18n_dislike_tooltip"   => array("default" => ''),
+    "i18n_unlike_tooltip"    => array("default" => ''),
+    "i18n_undislike_tooltip" => array("default" => ''),
+    "i18n_share_text"        => array("default" => ''),
+    "i18n_popup_close"       => array("default" => ''),
+    "i18n_popup_text"        => array("default" => ''))));
+
+/**
+ * Implements hook_help().
+ */
+function likebtn_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#likebtn':
+      $output = file_get_contents(drupal_get_path('module', 'likebtn') . '/README.txt');
+      return '<pre>' . check_plain($output) . '</pre>';
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function likebtn_menu() {
+  $items = array();
+
+  $items['admin/config/services/likebtn'] = array(
+    'title'            => 'LikeBtn configuration',
+    'description'      => 'Configuration for LikeBtn module',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('likebtn_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type'             => MENU_NORMAL_ITEM,
+    'file'             => 'likebtn.admin.inc',
+  );
+
+  $items['node/%node/likes'] = array(
+    'title'             => 'Likes',
+    'page callback'     => 'likebtn_likes_page',
+    'page arguments'    => array(1, 'node'),
+    'access arguments'  => array('administer site configuration'),
+    'type'              => MENU_LOCAL_TASK,
+    'weight'            => 10,
+    'file'              => 'likebtn.likes.inc',
+  );
+
+  $items['comment/%comment/likes'] = array(
+    'title'             => 'Likes',
+    'page callback'     => 'likebtn_likes_page',
+    'page arguments'    => array(1, 'comment'),
+    'access arguments'  => array('administer site configuration'),
+    'type'              => MENU_LOCAL_TASK,
+    'weight'            => 10,
+    'file'              => 'likebtn.likes.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_entity_view().
+ */
+function likebtn_entity_view($entity, $type, $view_mode, $langcode) {
+
+  if (!in_array($type, array('node', 'comment'))) {
+    return;
+  }
+
+  // Check if module is enabled for the current entity view mode.
+  if (!in_array($view_mode, variable_get('likebtn_view_modes', array()), TRUE)) {
+    return;
+  }
+
+  if ($type == 'comment') {
+    $comment_node = node_load($entity->nid);
+    // Check if LikeBtn is enabled for comments to the current node type.
+    if (!in_array($comment_node->type, variable_get('likebtn_comments_nodetypes', array()), TRUE)) {
+      return;
+    }
+    $entity_id = $entity->cid;
+  }
+  else {
+    // Check if LikeBtn is enabled for the current node type.
+    if (!in_array($entity->type, variable_get('likebtn_nodetypes', array()), TRUE)) {
+      return;
+    }
+    $entity_id = $entity->nid;
+  }
+
+  $entity->content['likebtn_display'] = array(
+    '#markup' => _likebtn_get_markup($type, $entity_id),
+    '#weight' => variable_get('likebtn_weight'),
+  );
+}
+
+/**
+ * Getting LikeBtn markup.
+ */
+function _likebtn_get_markup($element_name, $element_id, $values = NULL) {
+
+  // Run sunchronization.
+  $likebtn = new LikeBtn();
+  $likebtn->runSyncVotes();
+
+  $settings = unserialize(LIKEBTN_SETTINGS);
+
+  $data = 'data-identifier="' . $element_name . '_' . $element_id . '"';
+
+  foreach ($settings as $option_name => $option_info) {
+
+    if ($values) {
+      // For field.
+      if (isset($values['likebtn_settings_' . $option_name])) {
+        $option_value = $values['likebtn_settings_' . $option_name];
+      }
+      else {
+        $option_value = '';
+      }
+    }
+    else {
+      if (function_exists('variable_get_value')) {
+        $option_value = variable_get_value('likebtn_settings_' . $option_name, array('default' => ''));
+      }
+      else {
+        $option_value = variable_get('likebtn_settings_' . $option_name, '');
+      }
+    }
+    // Do not add option if it has default value.
+    if ($option_value !== '' && $option_value != $settings[$option_name]['default']) {
+      $option_value_prepared = $option_value;
+      if (is_int($option_value)) {
+        if ($option_value) {
+          $option_value_prepared = 'true';
+        }
+        else {
+          $option_value_prepared = 'false';
+        }
+      }
+      // Replace quotes with &quot; to avoid XSS.
+      $option_value_prepared = str_replace('"', '&quot;', $option_value_prepared);
+
+      $data .= ' data-' . $option_name . '="' . $option_value_prepared . '" ';
+    }
+  }
+
+  drupal_add_js("//www.likebtn.com/js/widget.js", array('type' => 'external', 'scope' => 'footer'));
+
+  $markup = <<<MARKUP
+<!-- LikeBtn.com BEGIN -->
+<span class="likebtn-wrapper" {$data}></span>
+<!-- LikeBtn.com END -->
+MARKUP;
+
+  return $markup;
+}
+
+/**
+ * Implements hook_variable_info().
+ */
+function likebtn_variable_info($options) {
+
+  $variables['likebtn_settings_i18n_like'] = array(
+    'title'       => 'LikeBtn: i18n_like',
+    'description' => t('Like Button label', array(), $options),
+    'localize'    => TRUE,
+  );
+  $variables['likebtn_settings_i18n_dislike'] = array(
+    'title'       => 'LikeBtn: i18n_dislike',
+    'description' => t('Dislike Button label', array(), $options),
+    'localize'    => TRUE,
+  );
+  $variables['likebtn_settings_i18n_like_tooltip'] = array(
+    'title'       => 'LikeBtn: i18n_like_tooltip',
+    'description' => t('Like Button tooltip', array(), $options),
+    'localize'    => TRUE,
+  );
+  $variables['likebtn_settings_i18n_dislike_tooltip'] = array(
+    'title'       => 'LikeBtn: i18n_dislike_tooltip',
+    'description' => t('Dislike Button tooltip', array(), $options),
+    'localize'    => TRUE,
+  );
+  $variables['likebtn_settings_i18n_unlike_tooltip'] = array(
+    'title'       => 'LikeBtn: i18n_unlike_tooltip',
+    'description' => t('Like Button tooltip after "liking"', array(), $options),
+    'localize'    => TRUE,
+  );
+  $variables['likebtn_settings_i18n_undislike_tooltip'] = array(
+    'title'       => 'LikeBtn: i18n_undislike_tooltip',
+    'description' => t('Dislike Button tooltip after "liking"', array(), $options),
+    'localize'    => TRUE,
+  );
+  $variables['likebtn_settings_i18n_share_text'] = array(
+    'title'       => 'LikeBtn: i18n_share_text',
+    'description' => t('Text displayed in share popup after "liking"', array(), $options),
+    'localize'    => TRUE,
+  );
+  $variables['likebtn_settings_i18n_popup_close'] = array(
+    'title'       => 'LikeBtn: i18n_popup_close',
+    'description' => t('Popup close button', array(), $options),
+    'localize'    => TRUE,
+  );
+  $variables['likebtn_settings_i18n_popup_text'] = array(
+    'title'       => 'LikeBtn: i18n_popup_text',
+    'description' => t('Popup text when sharing is disabled', array(), $options),
+    'localize'    => TRUE,
+  );
+  return $variables;
+}
+
+/**
+ * Custom function returning settings form.
+ */
+function _likebtn_settings_form($default_values = NULL) {
+  $form = array();
+
+  // Run locales sunchronization.
+  $likebtn = new LikeBtn();
+  $likebtn->runSyncLocales();
+
+  $likebtn_locales = variable_get('likebtn_locales', array());
+
+  $likebtn_settings_lang_options['auto'] = "auto - " . t("Detect from client browser");
+  if ($likebtn_locales) {
+    // Locales have been loaded using API.
+    foreach ($likebtn_locales as $locale_code => $locale_info) {
+      $lang_option = $locale_code . ' - ' . $locale_info['name'];
+      if ($locale_code != 'en') {
+        $lang_option .= ' (' . $locale_info['en_name'] . ')';
+      }
+      $likebtn_settings_lang_options[$locale_code] = $lang_option;
+    }
+  }
+  else {
+    // Locales have not been loaded using API yet, load default languages.
+    $likebtn_settings_lang_options["en"] = "en - English";
+    $likebtn_settings_lang_options["ru"] = "ru - Русский (Russian)";
+    $likebtn_settings_lang_options["de"] = "de - Deutsch (German)";
+    $likebtn_settings_lang_options["ja"] = "ja - 日本語 (Japanese)";
+    $likebtn_settings_lang_options["uk"] = "uk - Українська мова (Ukrainian)";
+  }
+
+  $form['likebtn_settings_item'] = array(
+    '#type'          => 'item',
+    '#title'         => t('Settings...'),
+    '#description'   => t('You can find detailed settings description on <a href="@link-likebtn">LikeBtn.com</a>. Options marked with tariff plan name (PLUS, PRO, VIP) are available only if your website is upgraded to corresponding plan (<a href="@link-read_more">read more about plans and pricing</a>).',
+      array(
+        '@link-likebtn'   => 'http://www.likebtn.com/en/#settings',
+        '@link-read_more' => 'http://www.likebtn.com/en/#plans_pricing',
+      )
+    ),
+  );
+
+  $form['likebtn_settings_style_language'] = array(
+    '#type'        => 'fieldset',
+    '#title'       => t('Style and language'),
+    '#weight'      => 4,
+    '#collapsible' => TRUE,
+    '#collapsed'   => TRUE,
+  );
+  $form['likebtn_settings_style_language']['likebtn_settings_style'] = array(
+    '#type'          => 'select',
+    '#title'         => t('Style'),
+    '#description'   => 'style',
+    '#options'       => array(
+      "white"        => "white",
+      "lightgray"    => "lightgray",
+      "gray"         => "gray",
+      "black"        => "black",
+      "padded"       => "padded",
+      "drop"         => "drop",
+      "line"         => "line",
+      "transparent"  => "transparent",
+      "youtube"      => "youtube",
+      "habr"         => "habr",
+      "heartcross"   => "heartcross",
+      "plusminus"    => "plusminus",
+      "google"       => "google",
+      "greenred"     => "greenred",
+      "large"        => "large"),
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_style']) ? $default_values['likebtn_settings_style'] : 'white') : variable_get('likebtn_settings_style', 'white')),
+  );
+  $form['likebtn_settings_style_language']['likebtn_settings_lang'] = array(
+    '#type'          => 'select',
+    '#title'         => t('Language'),
+    '#description'   => 'lang',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_lang']) ? $default_values['likebtn_settings_lang'] : 'en') : variable_get('likebtn_settings_lang', "en")),
+    '#options'       => $likebtn_settings_lang_options,
+  );
+
+  $form['likebtn_settings_appearance_behaviour'] = array(
+    '#type'        => 'fieldset',
+    '#title'       => t('Appearance and behaviour'),
+    '#weight'      => 5,
+    '#collapsible' => TRUE,
+    '#collapsed'   => TRUE,
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_share_enabled'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Offer to share a link in social networks after "liking" (PLUS, PRO, VIP)'),
+    '#description'   => 'share_enabled',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_share_enabled']) ? $default_values['likebtn_settings_share_enabled'] : TRUE) : variable_get('likebtn_settings_share_enabled', TRUE)),
+    '#states' => array(
+      // Disable field.
+      'disabled' => array(
+        ':input[name="likebtn_plan"]' => array('value' => LIKEBTN_PLAN_FREE),
+      ),
+    ),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_show_like_label'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Show "like"-label'),
+    '#description'   => 'show_like_label',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_show_like_label']) ? $default_values['likebtn_settings_show_like_label'] : TRUE) : variable_get('likebtn_settings_show_like_label', TRUE)),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_show_dislike_label'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Show "dislike"-label'),
+    '#description'   => 'show_dislike_label',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_show_dislike_label']) ? $default_values['likebtn_settings_show_dislike_label'] : FALSE) : variable_get('likebtn_settings_show_dislike_label', FALSE)),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_dislike_share'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Offer to share a link in social networks after "disliking"'),
+    '#description'   => 'dislike_share',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_dislike_share']) ? $default_values['likebtn_settings_dislike_share'] : FALSE) : variable_get('likebtn_settings_dislike_share', FALSE)),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_dislike_enabled'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Show Dislike Button'),
+    '#description'   => 'dislike_enabled',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_dislike_enabled']) ? $default_values['likebtn_settings_dislike_enabled'] : TRUE) : variable_get('likebtn_settings_dislike_enabled', TRUE)),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_counter_clickable'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Votes counter is clickable'),
+    '#description'   => 'counter_clickable',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_counter_clickable']) ? $default_values['likebtn_settings_counter_clickable'] : FALSE) : variable_get('likebtn_settings_counter_clickable', FALSE)),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_counter_type'] = array(
+    '#type'          => 'select',
+    '#title'         => t('Counter type'),
+    '#description'   => 'counter_type',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_counter_type']) ? $default_values['likebtn_settings_counter_type'] : "number") : variable_get('likebtn_settings_counter_type', "number")),
+    '#options'       => array(
+      "number"  => "number",
+      "percent" => "percent"),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_display_only'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Voting is disabled, display results only'),
+    '#description'   => 'display_only',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_display_only']) ? $default_values['likebtn_settings_display_only'] : FALSE) : variable_get('likebtn_settings_display_only', FALSE)),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_substract_dislikes'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Dislikes are substracted from likes'),
+    '#description'   => 'substract_dislikes',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_substract_dislikes']) ? $default_values['likebtn_settings_substract_dislikes'] : FALSE) : variable_get('likebtn_settings_substract_dislikes', FALSE)),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_unlike_allowed'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Allow to unlike and undislike'),
+    '#description'   => 'unlike_allowed',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_unlike_allowed']) ? $default_values['likebtn_settings_unlike_allowed'] : TRUE) : variable_get('likebtn_settings_unlike_allowed', TRUE)),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_show_copyright'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Show copyright link in the share popup') . ' (VIP)',
+    '#description'   => 'show_copyright',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_show_copyright']) ? $default_values['likebtn_settings_show_copyright'] : TRUE) : variable_get('likebtn_settings_show_copyright', TRUE)),
+    '#states' => array(
+      // Enable field.
+      'enabled' => array(
+        ':input[name="likebtn_plan"]' => array('value' => LIKEBTN_PLAN_VIP),
+      ),
+    ),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_popup_enabled'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Show popop after "liking" (VIP)'),
+    '#description'   => 'popup_enabled',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_popup_enabled']) ? $default_values['likebtn_settings_popup_enabled'] : TRUE) : variable_get('likebtn_settings_popup_enabled', TRUE)),
+    '#states' => array(
+      // Enable field.
+      'enabled' => array(
+        ':input[name="likebtn_plan"]' => array('value' => LIKEBTN_PLAN_VIP),
+      ),
+    ),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_popup_position'] = array(
+    '#type'          => 'select',
+    '#title'         => t('Popup position'),
+    '#description'   => 'popup_position',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_popup_position']) ? $default_values['likebtn_settings_popup_position'] : TRUE) : variable_get('likebtn_settings_popup_position', TRUE)),
+    '#options'       => array(
+      "top"  => "top",
+      "right" => "right",
+      "bottom" => "bottom",
+      "left" => "left"),
+  );
+  $form['likebtn_settings_appearance_behaviour']['likebtn_settings_popup_style'] = array(
+    '#type'          => 'select',
+    '#title'         => t('Popup style'),
+    '#description'   => 'popup_style',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_popup_style']) ? $default_values['likebtn_settings_popup_style'] : TRUE) : variable_get('likebtn_settings_popup_style', TRUE)),
+    '#options'       => array(
+      "light"  => "light",
+      "dark" => "dark"),
+  );
+
+  $form['likebtn_settings_statistics'] = array(
+    '#type'        => 'fieldset',
+    '#title'       => t('Statistics'),
+    '#weight'      => 6,
+    '#collapsible' => TRUE,
+    '#collapsed'   => TRUE,
+  );
+  $form['likebtn_settings_statistics']['likebtn_settings_addthis_pubid'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('AddThis <a href="@link-profile-id">Profile ID</a>. Allows to collect sharing statistics and view it on AddThis <a href="@link-analytics-page">analytics page</a> (PRO, VIP)',
+      array(
+        '@link-profile-id'     => 'https://www.addthis.com/settings/publisher',
+        '@link-analytics-page' => 'http://www.addthis.com/analytics',
+      )
+    ),
+    '#description'   => 'addthis_pubid',
+    '#maxlength'     => 30,
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_addthis_pubid']) ? $default_values['likebtn_settings_addthis_pubid'] : NULL) : variable_get('likebtn_settings_addthis_pubid', NULL)),
+    '#states' => array(
+      // Disable field.
+      'disabled' => array(
+        array(':input[name="likebtn_plan"]' => array('value' => LIKEBTN_PLAN_FREE)),
+        array(':input[name="likebtn_plan"]' => array('value' => LIKEBTN_PLAN_PLUS)),
+      ),
+    ),
+  );
+  $form['likebtn_settings_statistics']['likebtn_settings_addthis_service_codes'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('AddThis <a href="@link">service codes</a> separated by comma (max 8). Used to specify which buttons are displayed in share popup. Example: google_plusone_share, facebook, twitter (PRO, VIP)', array(
+        '@link' => 'http://www.addthis.com/services/list',
+    )),
+    '#description'   => 'addthis_service_codes',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_addthis_service_codes']) ? $default_values['likebtn_settings_addthis_service_codes'] : NULL) : variable_get('likebtn_settings_addthis_service_codes', NULL)),
+    '#states' => array(
+      // Disable field.
+      'disabled' => array(
+        array(':input[name="likebtn_plan"]' => array('value' => LIKEBTN_PLAN_FREE)),
+        array(':input[name="likebtn_plan"]' => array('value' => LIKEBTN_PLAN_PLUS)),
+      ),
+    ),
+  );
+
+  $form['likebtn_settings_i18n'] = array(
+    '#type'        => 'fieldset',
+    '#title'       => t('Labels'),
+    '#weight'      => 7,
+    '#collapsible' => TRUE,
+    '#collapsed'   => TRUE,
+  );
+
+  $form['likebtn_settings_i18n']['likebtn_settings_i18n_like'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Like Button label'),
+    '#description'   => 'i18n_like',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_i18n_like']) ? $default_values['likebtn_settings_i18n_like'] : NULL) : variable_get('likebtn_settings_i18n_like', NULL)),
+    /*'#states' => array(
+      // Hide field when likebtn_settings_show_like_label is disabled.
+      'invisible' => array(
+        'input[name="likebtn_settings_show_like_label"]' => array('checked'
+     * => FALSE),
+      ),
+    ),*/
+  );
+
+  $form['likebtn_settings_i18n']['likebtn_settings_i18n_dislike'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Dislike Button label'),
+    '#description'   => 'i18n_dislike',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_i18n_dislike']) ? $default_values['likebtn_settings_i18n_dislike'] : NULL) : variable_get('likebtn_settings_i18n_dislike', NULL)),
+    /*'#states' => array(
+      // Hide field when likebtn_settings_show_dislike_label or
+      // likebtn_settings_show_dislike_label is disabled.
+      'visible' => array(
+        'input[name="likebtn_settings_show_dislike_label"]' => array('checked'
+     * => TRUE),
+        'input[name="likebtn_settings_dislike_enabled"]' => array('checked'
+     * => TRUE),
+      ),
+    ),*/
+  );
+
+  $form['likebtn_settings_i18n']['likebtn_settings_i18n_like_tooltip'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Like Button tooltip'),
+    '#description'   => 'i18n_like_tooltip',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_i18n_like_tooltip']) ? $default_values['likebtn_settings_i18n_like_tooltip'] : NULL) : variable_get('likebtn_settings_i18n_like_tooltip', NULL)),
+  );
+
+  $form['likebtn_settings_i18n']['likebtn_settings_i18n_dislike_tooltip'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Dislike Button tooltip'),
+    '#description'   => 'i18n_dislike_tooltip',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_i18n_dislike_tooltip']) ? $default_values['likebtn_settings_i18n_dislike_tooltip'] : NULL) : variable_get('likebtn_settings_i18n_dislike_tooltip', NULL)),
+  );
+
+  $form['likebtn_settings_i18n']['likebtn_settings_i18n_unlike_tooltip'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Like Button tooltip after "liking"'),
+    '#description'   => 'i18n_unlike_tooltip',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_i18n_unlike_tooltip']) ? $default_values['likebtn_settings_i18n_unlike_tooltip'] : NULL) : variable_get('likebtn_settings_i18n_unlike_tooltip', NULL)),
+  );
+
+  $form['likebtn_settings_i18n']['likebtn_settings_i18n_undislike_tooltip'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Dislike Button tooltip after "liking"'),
+    '#description'   => 'i18n_undislike_tooltip',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_i18n_undislike_tooltip']) ? $default_values['likebtn_settings_i18n_undislike_tooltip'] : NULL) : variable_get('likebtn_settings_i18n_undislike_tooltip', NULL)),
+  );
+
+  $form['likebtn_settings_i18n']['likebtn_settings_i18n_share_text'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Text displayed in share popup after "liking"'),
+    '#description'   => 'i18n_share_text',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_i18n_share_text']) ? $default_values['likebtn_settings_i18n_share_text'] : NULL) : variable_get('likebtn_settings_i18n_share_text', NULL)),
+    /*'#states' => array(
+      // Hide field when likebtn_settings_share_enabled or
+      // likebtn_settings_popup_enabled is disabled.
+      'visible' => array(
+        'input[name="likebtn_settings_share_enabled"]' => array('checked'
+     * => TRUE),
+        'input[name="likebtn_settings_popup_enabled"]' => array('checked'
+     * => TRUE),
+      ),
+    ),*/
+  );
+
+  $form['likebtn_settings_i18n']['likebtn_settings_i18n_popup_close'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Popup close button'),
+    '#description'   => 'i18n_popup_close',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_i18n_popup_close']) ? $default_values['likebtn_settings_i18n_popup_close'] : NULL) : variable_get('likebtn_settings_i18n_popup_close', NULL)),
+    /*'#states' => array(
+      // Hide field when likebtn_settings_share_enabled or
+      // likebtn_settings_popup_enabled is disabled.
+      'visible' => array(
+        'input[name="likebtn_settings_share_enabled"]' => array('checked'
+     * => TRUE),
+        'input[name="likebtn_settings_popup_enabled"]' => array('checked'
+     * => TRUE),
+      ),
+    ),*/
+  );
+
+  $form['likebtn_settings_i18n']['likebtn_settings_i18n_popup_text'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Popup text when sharing is disabled'),
+    '#description'   => 'i18n_popup_text',
+    '#default_value' => ($default_values ? (isset($default_values['likebtn_settings_i18n_popup_text']) ? $default_values['likebtn_settings_i18n_popup_text'] : NULL) : variable_get('likebtn_settings_i18n_popup_text', NULL)),
+    /*'#states' => array(
+      // Hide field when likebtn_settings_popup_enabled is disabled.
+      'visible' => array(
+        'input[name="likebtn_settings_popup_enabled"]' => array('checked'
+     * => TRUE),
+      ),
+    ),*/
+  );
+
+  $form['likebtn_demo_fieldset'] = array(
+    '#type'        => 'fieldset',
+    '#title'       => t('Live Demo'),
+    '#weight'      => 8,
+    '#collapsible' => FALSE,
+    '#collapsed'   => FALSE,
+  );
+
+  $form['likebtn_demo_fieldset']['likebtn_demo'] = array(
+    '#type'     => 'markup',
+    '#markup'   => _likebtn_get_markup('live_demo', 1, $default_values),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function likebtn_field_info() {
+  $info = array(
+    'likebtn_field' => array(
+      'label' => t('LikeBtn'),
+      'description' => t('Like Button.'),
+      'settings' => array(),
+      'instance_settings' => array(),
+      'default_widget' => 'likebtn_default_widget',
+      'default_formatter' => 'default',
+    ),
+  );
+
+  $settings = unserialize(LIKEBTN_SETTINGS);
+  foreach ($settings as $option_name => $option_info) {
+    $info['likebtn_field']['settings'][$option_name] = $option_info['default'];
+    $info['likebtn_field']['instance_settings'][$option_name] = $option_info['default'];
+  }
+  return $info;
+}
+
+/**
+ * Implements hook_field_instance_settings_form().
+ */
+function likebtn_field_instance_settings_form($field, $instance) {
+  $form = _likebtn_settings_form(_likebtn_flatten_field_instance_settings($instance['settings']));
+
+  return $form;
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function likebtn_field_is_empty($item, $field) {
+  $field_info = likebtn_field_info();
+  foreach ($field_info['likebtn_field']['settings'] as $field_name => $dummy) {
+    if (!empty($item[$field_name])) {
+      return FALSE;
+    }
+  }
+  return TRUE;
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function likebtn_field_widget_info() {
+  return array(
+    'likebtn_default_widget' => array(
+      'label'       => 'Like Button',
+      'field types' => array('likebtn_field'),
+    ),
+  );
+}
+
+/**
+ * Get settings values set for item or instance.
+ */
+function _likebtn_field_load($field, $item, $instance) {
+  $field_info = likebtn_field_info();
+  $keys = array_keys($field_info['likebtn_field']['settings']);
+  $value = array();
+
+  foreach ($keys as $key) {
+    if (isset($item[$key])) {
+      $value[$key] = $item[$key];
+    }
+    else {
+      // Search for key in instance settings.
+      // We have to come through instance settings as it is 2-dimentional
+      // array due to form fieldsets.
+      $instance_settings_exists = FALSE;
+      foreach ($instance['settings'] as $instance_settings) {
+        if (is_array($instance_settings)) {
+          foreach ($instance_settings as $instance_settings_key => $instance_settings_value) {
+            if ($instance_settings_key == $key) {
+              $instance_settings_exists = TRUE;
+              break;
+            }
+          }
+          if ($instance_settings_exists) {
+            break;
+          }
+        }
+      }
+
+      if ($instance_settings_exists) {
+        $value[$key] = $instance_settings_value;
+      }
+      else {
+        $value[$key] = $field['settings'][$key];
+      }
+    }
+  }
+  return $value;
+}
+
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function likebtn_field_formatter_info() {
+  return array(
+    'default' => array(
+      'label' => t('LikeBtn (default)'),
+      'field types' => array('likebtn_field'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function likebtn_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $entity_info = entity_get_info($entity_type);
+  $entity_id_key = $entity_info['entity keys']['id'];
+
+  $elements = array();
+  foreach ($items as $delta => $item) {
+    $elements[$delta] = array(
+      '#markup' => _likebtn_get_markup($entity_type, $entity->$entity_id_key . '_field_' . $instance['field_id'] . '_index_' . $delta, _likebtn_flatten_field_instance_settings($instance['settings'])),
+    );
+  }
+
+  return $elements;
+}
+
+/**
+ * Custom function for flattening field instance settings.
+ */
+function _likebtn_flatten_field_instance_settings($settings) {
+  $flat_settings = array();
+  foreach ($settings as $settings_fieldset) {
+    if (is_array($settings_fieldset)) {
+      foreach ($settings_fieldset as $settings_key => $settings_value) {
+        $flat_settings[$settings_key] = $settings_value;
+      }
+    }
+  }
+  return $flat_settings;
+}
+
+/**
+ * Implements hook_field_prepare_view().
+ */
+function likebtn_field_prepare_view($entity_type, $entities, $field, $instances, $langcode, &$items) {
+  // If there is no values in $items, specify default value.
+  foreach ($entities as $id => $entity) {
+    if (empty($items[$id])) {
+      $items[$id][0] = _likebtn_field_load($field, NULL, $instances[$id]);
+    }
+  }
+}
+
+/**
+ * Implements hook_votingapi_views_formatters().
+ */
+function likebtn_votingapi_views_formatters($details = array()) {
+  if ($details->field == 'value') {
+    return array(
+      'likebtn_views_widget_display_only' => t('LikeBtn widget (display only)'),
+      'likebtn_views_widget_full'         => t('LikeBtn widget'),
+    );
+  }
+}
+
+/**
+ * Get views widget markup.
+ */
+function likebtn_views_widget_display_only($value, $field, $columns) {
+  return _likebtn_get_views_widget_markup($value, $field, $columns, LIKEBTN_VIEWS_WIDGET_DISPLAY_ONLY);
+}
+
+/**
+ * Get views widget markup.
+ */
+function likebtn_views_widget_full($value, $field, $columns) {
+  return _likebtn_get_views_widget_markup($value, $field, $columns, LIKEBTN_VIEWS_WIDGET_FULL);
+}
+
+/**
+ * Get LikeBtn for view.
+ */
+function _likebtn_get_views_widget_markup($value, $field, $columns, $mode = LIKEBTN_VIEWS_WIDGET_FULL) {
+
+  $entity_name = $field->view->base_table;
+  $base_field  = $field->view->base_field;
+  $entity_id   = $columns->$base_field;
+
+  $values = NULL;
+  if ($mode == LIKEBTN_VIEWS_WIDGET_DISPLAY_ONLY) {
+    $values['display_only'] = TRUE;
+  }
+
+  // Find the VotingAPI tag (tag equals to field id (if LikeBtn has been added
+  // as field).
+  foreach ($field->query->table_queue[$field->relationship]['join']->extra as $votingapi_setting) {
+    if ($votingapi_setting['field'] == 'tag') {
+      $tag = $votingapi_setting['value'];
+    }
+    elseif ($votingapi_setting['field'] == 'value_type') {
+      $value_type = $votingapi_setting['value'];
+    }
+  }
+
+  return _likebtn_get_markup($entity_name, $entity_id, $values);
+}
+
+/**
+ * Get likes and dislikes count for the node.
+ */
+function likebtn_get_count($entity, $entity_type) {
+
+  list($entity_id, $entity_revision_id, $bundle) = entity_extract_ids($entity_type, $entity);
+
+  try {
+    $query = db_select('votingapi_vote', 'vv')
+      ->fields('vv')
+      ->condition('vv.entity_type', $entity_type)
+      ->condition('vv.entity_id', $entity_id)
+      ->condition('vv.value_type', 'points')
+      ->condition('vv.uid', 0)
+      ->condition('vv.vote_source', '')
+      ->orderBy('vv.tag', 'DESC');
+
+    $votingapi_results = $query->execute();
+  }
+  catch (Exception $e) {
+
+  }
+
+  // Display a table with like counts per button.
+  $rows = array();
+  // Like and dislike rows has been found.
+  $pair_rows_found = FALSE;
+  $records_by_tag  = array();
+  $fetch_finished  = FALSE;
+
+  while (1) {
+    $record = $votingapi_results->fetchAssoc();
+
+    // Records with likes and dislikes go one after another.
+    if (!count($records_by_tag) || $record['tag'] == $records_by_tag[count($records_by_tag) - 1]['tag']) {
+      // Do nothing.
+    }
+    elseif (count($records_by_tag)) {
+      $first_record  = $records_by_tag[0];
+      $second_record = array('value' => 0);
+      if (!empty($records_by_tag[1])) {
+        $second_record = $records_by_tag[1];
+      }
+      if ($first_record['value'] < 0) {
+        $likes    = $second_record['value'];
+        $dislikes = abs($first_record['value']);
+      }
+      else {
+        $likes    = $first_record['value'];
+        $dislikes = abs($second_record['value']);
+      }
+      $likes_minus_dislikes = $likes - $dislikes;
+
+      $rows[] = array(
+        'button' => _likebtn_get_name($first_record['tag']),
+        'likes' => $likes,
+        'dislikes' => $dislikes,
+        'likes_minus_dislikes' => $likes_minus_dislikes,
+      );
+
+      $records_by_tag = array();
+    }
+    $records_by_tag[] = $record;
+
+    if (!$record) {
+      break;
+    }
+  }
+
+  return $rows;
+}
+
+/**
+ * Get like button name for the likes page.
+ */
+function _likebtn_get_name($tag) {
+  $name = $tag;
+
+  $tag_parts = explode('_', $tag);
+
+  if ($tag_parts[0] != 'field') {
+    $name = t('Like Button');
+  }
+  else {
+    // Get field name.
+    if (!empty($tag_parts[1])) {
+
+      $field_info = field_info_field_by_id($tag_parts[1]);
+
+      if (isset($field_info['field_name'])) {
+        $name = t('Field') . ': ' . str_replace('field_', '', $field_info['field_name']);
+      }
+
+      if ($name && !empty($tag_parts[3])) {
+        $name .= ' (' . $tag_parts[3] . ')';
+      }
+    }
+  }
+
+  return $name;
+}

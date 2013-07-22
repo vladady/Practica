@@ -18,8 +18,8 @@
   <div class="content container "<?php print $content_attributes; ?>>
     <div class="row">
       <div class="span4 title-profile2"><?php 
-      $name = ' <h2>' . $content['field_nume'][0]['#markup'] . ' ';
-      $name .= $content['field_prenume'][0]['#markup'] . '<h2>';
+      $name = ' <h3>' . $content['field_nume'][0]['#markup'] . ' ';
+      $name .= $content['field_prenume'][0]['#markup'] . '<h3>';
       echo render($name);
       ?>
       </div>
