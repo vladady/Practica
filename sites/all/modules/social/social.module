@@ -772,7 +772,30 @@ function social_menu_link(&$variables){
       }
       $element['#localized_options'] += array('html' => TRUE);
       $output = l($icon . ' ' . $element['#title'], $element['#href'], $element['#localized_options']);
-      return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
+      $element['#attributes']['class'][] = 'dropdown';
+
+      $items = array(
+        array('href' => 'profile-main', 'title' => 'Profile'),
+        array('href' => 'wall', 'title' => 'Wall'),
+        array('href' => 'friends', 'title' => 'Friends'),
+        array('href' => 'requests', 'title' => 'Friend requests'),
+        array('href' => 'userslist', 'title' => 'Users list'),
+      );
+
+      $output = '<li ' . drupal_attributes($element['#attributes']) . '>
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#">' . $icon . 
+                ' ' . t('My profile') . 
+                '<b class="caret"></b></a>
+                <ul class="dropdown-menu">';
+
+      foreach($items as $item){
+        $output .= '<li>' . l($item['title'], $item['href']) . '</li>';
+      }
+      
+      $output .= '
+                </ul>
+              </li>';
+      return $output;
     }
   }
 
