@@ -26,7 +26,7 @@ body.front{
 }
 /*Formular*/
 .user-info-from-cookie{
-  width: 300px;
+ 	 width: 290px;
 	background: rgba(0, 0, 0, 0.6);
 	padding: 10px;
  	padding-left: 20px;
@@ -87,7 +87,7 @@ div.password-strength-text{
  min-height: 0; 
 }
 .row-fluid input[class*="span"] {
-	height: 29px;
+	height: 30px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
@@ -297,6 +297,11 @@ ul li.last{
 }
 
 .pozefront img{
-	display: block;
-	margin: auto;
+	width: 100px;
+	height: 100px;
+}
+
+.img-polaroid{
+	padding: 0;
+	background-color: transparent;
 }
