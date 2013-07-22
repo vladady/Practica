@@ -199,7 +199,12 @@ function social_get_users($limit = 9){
     $profile = reset($profile);
 
     @$path = $profile->field_poza['und']['0']['uri'];
-    $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $path));
+    $img = theme('image_style', array(
+      'style_name' => 'thumbnail', 
+      'path' => $path, 
+      'attributes' => array('class' => 'thumb')
+     )
+    );
     if($i%3==0){
       $output.='<div class="row-fluid"></div>';
     }
@@ -220,12 +225,12 @@ function social_buttons($uid, $type = 'add'){
 
   switch($type){
     case 'add':
-      $output .= '<button type="button" class="request-button" data-type="add" data-id="' . $uid. '">Send</button>';
+      $output .= '<button type="button" class="request-button" data-type="add" data-id="' . $uid. '">Send a request</button>';
       break;
 
     case 'respond':
-      $output .= '<button type="button" class="request-button" data-type="accept" data-id="' . $uid. '">Accept</button>
-                  <button type="button" class="request-button" data-type="deny" data-id="' . $uid . '">Deny</button>';
+      $output .= '<button type="button" class="request-button" data-type="accept" data-id="' . $uid. '">Accept request</button>
+                  <button type="button" class="request-button" data-type="deny" data-id="' . $uid . '">Deny request</button>';
       break;
     
     case 'unfriend':
@@ -233,7 +238,7 @@ function social_buttons($uid, $type = 'add'){
       break;
     
     case 'anulate':
-      $output .= '<button type="button" class="request-button" data-type="anulate" data-id="' . $uid. '">Anulate</button>';
+      $output .= '<button type="button" class="request-button" data-type="anulate" data-id="' . $uid. '">Anulate request</button>';
       break;
     }
 
@@ -713,7 +718,11 @@ function social_page_alter(&$page) {
   $page['navigation'] = array(
     '#markup' => drupal_render($form),
   );
-  //dpm($page);
+
+  if(arg(0) == 'profile-main'){
+    drupal_set_title('');
+  }
+
   if(user_is_logged_in()){
     return;
   }

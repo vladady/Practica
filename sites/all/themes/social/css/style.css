@@ -209,7 +209,14 @@ ul li.last{
 .page-profile-main .image-widget-data{
 	color: black;
 }
+#text-profile2 strong{
+	color:#0088CC;
+	padding: 3px;
+}
 
+.title-profile2 h2 {
+	color:#0088CC;
+}
 /* end page profile */
 
 
@@ -232,3 +239,14 @@ ul li.last{
    	height: 300px;
 }
 
+.page-userslist .thumbnail
+{
+    
+    background-color: white ;
+
+margin-left: auto;
+ border-radius : 12px;   
+   margin-left: 35px;
+   height: 300px;
+    margin-right: auto ;
+}
