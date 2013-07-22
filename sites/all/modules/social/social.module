@@ -68,14 +68,7 @@ function social_front_page(){
     $output['left'] = array(
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
-
-      '#markup' => '<div class="row-fluid2"><p></p>'.social_get_users().'</div>',
-
-
-      '#markup' => social_get_users(),
-
-      '#markup' => '<div class="row-fluid2">'.social_get_users().'</div>',
-
+      '#markup' => '<div class="row-fluid">'.social_get_users().'</div>',
       '#weight' => 0,
     );
 
@@ -209,7 +202,7 @@ function social_get_users($limit = 9){
       $output.='<div class="row-fluid"></div>';
     }
     $i++;
-    $output .= $img;
+    $output .='<div class="span3 pozefront">'. $img.'</div>';
     if($i==18)
       break;
   }
@@ -621,11 +614,12 @@ function social_wall_posts() {
   drupal_set_title($title);
 
   $results = db_select('node', 'n');
-  $results->join('friends', 'f', 'f.fid = n.uid OR n.uid = ' . $user->uid);
+  $results->join('friends', 'f', 'f.fid = n.uid or n.uid='.$user->uid);
   $results = $results->fields('n', array('nid', 'title'))
       ->condition('f.uid', $user->uid)
       ->condition('n.type', 'post')
       ->orderBy('n.created', 'DESC')
+      ->distinct()
       ->extend('PagerDefault')
       ->limit($limit)
       ->execute();

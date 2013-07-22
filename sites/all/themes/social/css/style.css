@@ -38,6 +38,7 @@ body.front{
   	font-weight: bold;
   	text-shadow: 0 2px 2px rgba(0,0,0,0.5);
   	opacity: .88;
+  	
 }
 
 #user-register-form label{
@@ -50,6 +51,7 @@ body.front{
 #user-register-form #edit-submit{
     color: #fff;
   	font-weight: bold;
+  	width: 325px;
   /*text-shadow: 0 2px 2px rgba(0,0,0,0.5);*/
   /*opacity: .88;*/
 }
@@ -107,8 +109,16 @@ div.password-strength-text{
 }
 
 #edit-search--2{
-	margin-top: 13px;
+	margin-top: 9px;
+	width: 250px;
+
 }
+
+#social-search-form--2 .form-submit{
+	margin-top: -1px;
+}
+
+
 /* end bara de navigare*/
 
 .date_create {
@@ -223,20 +233,11 @@ ul li.last{
 /* requests */
 
 .page-requests .thumbnail{
-
     background-color: white ;
     margin-left: auto;   
     margin-left: 35px;
     border-radius : 12px;
     height: 325px;
-
-
-   background-color: white ;
-   margin-left: auto;  
-   margin-left: 35px;
-   border-radius : 12px;
-   height: 325px;
-
 }
 
 
@@ -244,36 +245,22 @@ ul li.last{
 
 
     background-color: white ;
-    margin-left: auto;
+    margin-right: auto;
     border-radius : 12px;   
     margin-left: 35px;
     height: 300px;
 
 }
 
-	background-color: white ;
-	margin-left: 100px;
- 	border-radius : 12px;   
-        margin-left: 35px;
-        height: 300px;
-
- 	background-color: white ;
-	margin-left: auto;
- 	border-radius : 12px;   
-   	margin-left: 35px;
-   	height: 300px;
-
-
-
 .page-userslist .thumbnail
 {
     background-color: white ;  
-    margin-left: auto;
+    margin-right: auto;
  	border-radius : 12px;   
     margin-left: 35px;
     height: 325px;
-    
- 
+
+   
 }
 /*.page-requests .thumbnail .caption h3 {
     display: none !important;
@@ -292,8 +279,5 @@ ul li.last{
 
 .thumb{
 	padding:5px;
-	width:65px;
-    height: 90px;
-    min-width: 10%;
-    min-height: 20%;
+	
 }
