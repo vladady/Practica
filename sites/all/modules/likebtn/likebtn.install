@@ -1,0 +1,295 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the LikeBtn module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function likebtn_install() {
+  $t = get_t();
+  drupal_set_message($t("LikeBtn settings are available under !link",
+    array('!link' => l($t('Administration > Web services > LikeBtn configuration'), 'admin/config/services/likebtn'))
+  ));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function likebtn_uninstall() {
+  variable_del('likebtn_nodetypes');
+  variable_del('likebtn_comments_nodetypes');
+  variable_del('likebtn_view_modes');
+  variable_del('likebtn_weight');
+  variable_del('likebtn_plan');
+  variable_del('likebtn_account_data_email');
+  variable_del('likebtn_account_data_api_key');
+  variable_del('likebtn_sync_inerval');
+
+  require_once ( dirname(__FILE__) . '/likebtn.module');
+
+  $settings = unserialize(LIKEBTN_SETTINGS);
+  foreach ($settings as $option_name => $option_info) {
+    variable_del('likebtn_settings_' . $option_name);
+  }
+
+  variable_del('likebtn_last_sync_time');
+  variable_del('likebtn_last_successfull_sync_time');
+  variable_del('likebtn_last_locale_sync_time');
+  variable_del('likebtn_locales');
+
+  cache_clear_all('variables', 'cache_bootstrap');
+}
+
+/**
+ * Implements hook_field_schema().
+ */
+function likebtn_field_schema($field) {
+  return array(
+    'columns' => array(
+      'likebtn_likes' => array(
+        'type'        => 'int',
+        'size'        => 'normal',
+        'not null'    => FALSE,
+        'sortable'    => TRUE,
+        'default'     => 0,
+        'description' => 'Likes count',
+      ),
+      'likebtn_dislikes' => array(
+        'type'        => 'int',
+        'size'        => 'normal',
+        'not null'    => FALSE,
+        'sortable'    => TRUE,
+        'default'     => 0,
+        'description' => 'Dislikes count',
+      ),
+      'likebtn_likes_minus_dislikes' => array(
+        'type'        => 'int',
+        'size'        => 'normal',
+        'not null'    => FALSE,
+        'sortable'    => TRUE,
+        'default'     => 0,
+        'description' => 'Likes minus dislikes',
+      ),
+      'likebtn_settings_style' => array(
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => "white",
+        'description' => 'Style',
+      ),
+      'likebtn_settings_lang' => array(
+        'type'        => 'varchar',
+        'length'      => 7,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => "en",
+        'description' => 'Language',
+      ),
+      'likebtn_settings_share_enabled' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 1,
+        'description' => 'Offer to share a link in social networks after "liking" (PLUS)',
+      ),
+      'likebtn_settings_show_like_label' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 1,
+        'description' => 'Show "like"-label',
+      ),
+      'likebtn_settings_show_dislike_label' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 0,
+        'description' => 'Show "dislike"-label',
+      ),
+      'likebtn_settings_dislike_share' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 0,
+        'description' => 'Offer to share a link in social networks after "disliking"',
+      ),
+      'likebtn_settings_dislike_enabled' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 1,
+        'description' => 'Show Dislike Button',
+      ),
+      'likebtn_settings_counter_clickable' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 0,
+        'description' => 'Votes counter is clickable',
+      ),
+      'likebtn_settings_counter_type' => array(
+        'type'        => 'varchar',
+        'length'      => 32,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => "number",
+        'description' => 'Counter type',
+      ),
+      'likebtn_settings_display_only' => array(
+        'type'        => 'int',
+        'length'      => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 0,
+        'description' => 'Voting is disabled, display results only',
+      ),
+      'likebtn_settings_substract_dislikes' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 0,
+        'description' => 'Dislikes are substracted from likes',
+      ),
+      'likebtn_settings_unlike_allowed' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 1,
+        'description' => 'Allow to unlike and undislike',
+      ),
+      'likebtn_settings_show_copyright' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 1,
+        'description' => 'Show copyright link in the share popup (VIP)',
+      ),
+      'likebtn_settings_popup_enabled' => array(
+        'type'        => 'int',
+        'size'        => 'tiny',
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => 1,
+        'description' => 'Show popop after "liking" (VIP)',
+      ),
+      'likebtn_settings_popup_position' => array(
+        'type'        => 'varchar',
+        'length'      => 32,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => "top",
+        'description' => 'Popup position',
+      ),
+      'likebtn_settings_popup_style' => array(
+        'type'        => 'varchar',
+        'length'      => 32,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => "light",
+        'description' => 'Popup style',
+      ),
+      'likebtn_settings_addthis_pubid' => array(
+        'type'        => 'varchar',
+        'length'      => 30,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'AddThis Profile ID',
+      ),
+      'likebtn_settings_addthis_service_codes' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'AddThis service codes separated by comma (max 8)',
+      ),
+      'likebtn_settings_i18n_like' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'Like Button label translation',
+      ),
+      'likebtn_settings_i18n_dislike' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'Dislike Button label translation',
+      ),
+      'likebtn_settings_i18n_like_tooltip' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'Like Button tooltip translation',
+      ),
+      'likebtn_settings_i18n_dislike_tooltip' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'Dislike Button tooltip translation',
+      ),
+      'likebtn_settings_i18n_unlike_tooltip' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'Translation of the Like Button tooltip after "liking"',
+      ),
+      'likebtn_settings_i18n_undislike_tooltip' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'Translation of the Dislike Button tooltip after "liking"',
+      ),
+      'likebtn_settings_i18n_share_text' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'Translation of the text displayed in share popup after "liking"',
+      ),
+      'likebtn_settings_i18n_popup_close' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'Popup close button translation',
+      ),
+      'likebtn_settings_i18n_popup_text' => array(
+        'type'        => 'varchar',
+        'length'      => 256,
+        'not null'    => FALSE,
+        'sortable'    => FALSE,
+        'default'     => NULL,
+        'description' => 'Popup text when sharing is disabled',
+      ),
+
+    ),
+  );
+}

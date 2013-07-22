@@ -42,7 +42,7 @@
 <div class="main-container container">
 
   <header role="banner" id="page-header">
-    <?php print render($page['header']); ?>
+    <?php  print render($page['header']); ?>
   </header> <!-- /#header -->
 
   <div class="row-fluid">
@@ -60,7 +60,7 @@
       <a id="main-content"></a>
       <?php print render($title_prefix); ?>
       <?php if (!empty($title) && !drupal_is_front_page()): ?>
-        <h1 class="page-header"><?php print $title; ?></h1>
+        <h1 class="page-header"><?php print  $title; ?></h1>
       <?php endif; ?>
       <?php print render($title_suffix); ?>
       <?php print $messages; ?>
