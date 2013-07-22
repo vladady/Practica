@@ -223,49 +223,17 @@ ul li.last{
 /* requests */
 
 .page-requests .thumbnail{
-
     background-color: white ;
-<<<<<<< HEAD
-
-   margin-left: auto;
-     
-   margin-left: 35px;
-   border-radius : 12px;
-   height: 325px;
-   
-
-   	margin-left: auto;   
-   	margin-left: 35px;
-   	border-radius : 12px;
-   	height: 325px;
-=======
     margin-left: auto;   
     margin-left: 35px;
     border-radius : 12px;
     height: 325px;
-
-
-   background-color: white ;
-   margin-left: auto;  
-   margin-left: 35px;
-   border-radius : 12px;
-   height: 325px;
->>>>>>> 8a2eb871f3c46d781b5c2ea8f55f77c111ddcada
-
 }
 
 
 .page-friends .thumbnail {
 
 
-<<<<<<< HEAD
- 	background-color: white ;
-	margin-left: 100px;
- 	border-radius : 12px;   
-    margin-left: 35px;
-    height: 300px;
-
-=======
     background-color: white ;
     margin-left: auto;
     border-radius : 12px;   
@@ -273,31 +241,6 @@ ul li.last{
     height: 300px;
 
 }
-
-	background-color: white ;
-	margin-left: 100px;
- 	border-radius : 12px;   
-        margin-left: 35px;
-        height: 300px;
-
->>>>>>> 8a2eb871f3c46d781b5c2ea8f55f77c111ddcada
- 	background-color: white ;
-	margin-left: auto;
- 	border-radius : 12px;   
-   	margin-left: 35px;
-   	height: 300px;
-
-<<<<<<< HEAD
-}
-
-.page-userslist .thumbnail
-{
-   background-color: white ;  
-   margin-left: auto;
-   border-radius : 12px;   
-   margin-left: 35px;
-   height: 325px;
-=======
 
 
 .page-userslist .thumbnail
@@ -307,7 +250,6 @@ ul li.last{
  	border-radius : 12px;   
     margin-left: 35px;
     height: 325px;
->>>>>>> 8a2eb871f3c46d781b5c2ea8f55f77c111ddcada
     
  
 }
