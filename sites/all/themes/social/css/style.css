@@ -147,6 +147,8 @@ ul li.last{
 /* page profile */
 .page-profile-main .content{
 	color: black;
+	padding: 20px;
+	width: 70%;
 }
 
 .page-profile-main .image-widget-data{
@@ -154,3 +156,4 @@ ul li.last{
 }
 
 /* end page profile */
+
