@@ -199,7 +199,12 @@ function social_get_users($limit = 9){
     $profile = reset($profile);
 
     @$path = $profile->field_poza['und']['0']['uri'];
-    $img = theme('image_style', array('style_name' => 'thumbnail', 'path' => $path));
+    $img = theme('image_style', array(
+      'style_name' => 'thumbnail', 
+      'path' => $path, 
+      'attributes' => array('class' => 'thumb')
+     )
+    );
     if($i%3==0){
       $output.='<div class="row-fluid"></div>';
     }
