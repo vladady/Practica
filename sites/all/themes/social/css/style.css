@@ -223,50 +223,35 @@ ul li.last{
 /* requests */
 
 .page-requests .thumbnail{
-    background-color: white ;
-<<<<<<< HEAD
-   margin-left: auto;
-     
+   background-color: white ;
+   margin-left: auto;  
    margin-left: 35px;
    border-radius : 12px;
    height: 325px;
-   
-=======
-   	margin-left: auto;   
-   	margin-left: 35px;
-   	border-radius : 12px;
-   	height: 325px;
->>>>>>> 93e496403c1aaf1b0bf6086cab70c4cc0810a85e
 }
 
 
 .page-friends .thumbnail {
-<<<<<<< HEAD
+	background-color: white ;
+	margin-left: 100px;
+ 	border-radius : 12px;   
+    margin-left: 35px;
+    height: 300px;
 
- background-color: white ;
-
-margin-left: 100px;
- border-radius : 12px;   
-   margin-left: 35px;
-   height: 300px;
-=======
  	background-color: white ;
 	margin-left: auto;
  	border-radius : 12px;   
    	margin-left: 35px;
    	height: 300px;
->>>>>>> 93e496403c1aaf1b0bf6086cab70c4cc0810a85e
-}
+
 
 .page-userslist .thumbnail
 {
- 
     background-color: white ;  
-
     margin-left: auto;
- border-radius : 12px;   
-   margin-left: 35px;
-   height: 325px;
+ 	border-radius : 12px;   
+    margin-left: 35px;
+    height: 325px;
     
  
 }
@@ -289,6 +274,6 @@ margin-left: 100px;
 	padding:5px;
 	width:65px;
     height: 90px;
-     min-width: 10%;
-  min-height: 20%;
+    min-width: 10%;
+    min-height: 20%;
 }
