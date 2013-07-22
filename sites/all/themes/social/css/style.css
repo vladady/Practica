@@ -107,7 +107,11 @@ div.password-strength-text{
 }
 
 #edit-search--2{
-	margin-top: 13px;
+	margin-top: 5px;
+}
+
+#social-search-form--2 .form-submit{
+	margin-top: -5px;
 }
 /* end bara de navigare*/
 
@@ -237,7 +241,7 @@ ul li.last{
 
 
     background-color: white ;
-    margin-left: auto;
+    margin-right: auto;
     border-radius : 12px;   
     margin-left: 35px;
     height: 300px;
@@ -247,12 +251,12 @@ ul li.last{
 .page-userslist .thumbnail
 {
     background-color: white ;  
-    margin-left: auto;
+    margin-right: auto;
  	border-radius : 12px;   
     margin-left: 35px;
     height: 325px;
-    
- 
+
+   
 }
 /*.page-requests .thumbnail .caption h3 {
     display: none !important;
