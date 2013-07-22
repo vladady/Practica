@@ -221,6 +221,7 @@ ul li.last{
      
    margin-left: 35px;
    border-radius : 12px;
+   height: 325px;
 }
 
 
@@ -231,5 +232,6 @@ ul li.last{
 margin-left: auto;
  border-radius : 12px;   
    margin-left: 35px;
+   height: 300px;
 }
 
