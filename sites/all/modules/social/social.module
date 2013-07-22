@@ -718,7 +718,11 @@ function social_page_alter(&$page) {
   $page['navigation'] = array(
     '#markup' => drupal_render($form),
   );
-  //dpm($page);
+
+  if(arg(0) == 'profile-main'){
+    drupal_set_title('');
+  }
+
   if(user_is_logged_in()){
     return;
   }

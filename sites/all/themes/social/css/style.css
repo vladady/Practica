@@ -209,7 +209,14 @@ ul li.last{
 .page-profile-main .image-widget-data{
 	color: black;
 }
+#text-profile2 strong{
+	color:#0088CC;
+	padding: 3px;
+}
 
+.title-profile2 h3 {
+	color:#0088CC;
+}
 /* end page profile */
 
 
@@ -217,34 +224,65 @@ ul li.last{
 
 .page-requests .thumbnail{
     background-color: white ;
+<<<<<<< HEAD
    margin-left: auto;
      
    margin-left: 35px;
    border-radius : 12px;
    height: 325px;
+   
+=======
+   	margin-left: auto;   
+   	margin-left: 35px;
+   	border-radius : 12px;
+   	height: 325px;
+>>>>>>> 93e496403c1aaf1b0bf6086cab70c4cc0810a85e
 }
 
 
 .page-friends .thumbnail {
+<<<<<<< HEAD
 
  background-color: white ;
 
-margin-left: auto;
+margin-left: 100px;
  border-radius : 12px;   
    margin-left: 35px;
    height: 300px;
+=======
+ 	background-color: white ;
+	margin-left: auto;
+ 	border-radius : 12px;   
+   	margin-left: 35px;
+   	height: 300px;
+>>>>>>> 93e496403c1aaf1b0bf6086cab70c4cc0810a85e
 }
 
 .page-userslist .thumbnail
 {
-    
-    background-color: white ;
+ 
+    background-color: white ;  
 
-margin-left: auto;
+    margin-left: auto;
  border-radius : 12px;   
    margin-left: 35px;
-   height: 300px;
-    margin-right: auto ;
+   height: 325px;
+    
+ 
+}
+/*.page-requests .thumbnail .caption h3 {
+    display: none !important;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    min-height: 227px;
+    
+}*/
+.thumbnail > img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
 }
 
 .thumb{
