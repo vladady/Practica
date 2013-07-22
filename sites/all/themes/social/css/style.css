@@ -23,33 +23,33 @@ body.front{
   width: 335px;
 	background: rgba(0, 0, 0, 0.6);
 	padding: 10px;
-  padding-left: 20px;
+ 	padding-left: 20px;
 	margin-left: 100px;
 	margin-top: 90px;
 	margin-right: 10px;
 }
 
 .page-frontpage .embedded-form{
-  padding: 10px;
+  	padding: 10px;
 }
 
 #user-register-form h1{
-  color: #fff;
-  font-weight: bold;
-  text-shadow: 0 2px 2px rgba(0,0,0,0.5);
-  opacity: .88;
+ 	color: #fff;
+  	font-weight: bold;
+  	text-shadow: 0 2px 2px rgba(0,0,0,0.5);
+  	opacity: .88;
 }
 
 #user-register-form label{
-  color: #fff;
-  font-weight: bold;
-  text-shadow: 0 2px 2px rgba(0,0,0,0.5);
-  opacity: .88;
+ 	color: #fff;
+ 	font-weight: bold;
+ 	text-shadow: 0 2px 2px rgba(0,0,0,0.5);
+  	opacity: .88;
 }
 
 #user-register-form #edit-submit{
     color: #fff;
-  font-weight: bold;
+  	font-weight: bold;
   /*text-shadow: 0 2px 2px rgba(0,0,0,0.5);*/
   /*opacity: .88;*/
 }
@@ -223,7 +223,9 @@ ul li.last{
 /* requests */
 
 .page-requests .thumbnail{
+
     background-color: white ;
+<<<<<<< HEAD
 
    margin-left: auto;
      
@@ -236,6 +238,19 @@ ul li.last{
    	margin-left: 35px;
    	border-radius : 12px;
    	height: 325px;
+=======
+    margin-left: auto;   
+    margin-left: 35px;
+    border-radius : 12px;
+    height: 325px;
+
+
+   background-color: white ;
+   margin-left: auto;  
+   margin-left: 35px;
+   border-radius : 12px;
+   height: 325px;
+>>>>>>> 8a2eb871f3c46d781b5c2ea8f55f77c111ddcada
 
 }
 
@@ -243,18 +258,36 @@ ul li.last{
 .page-friends .thumbnail {
 
 
+<<<<<<< HEAD
  	background-color: white ;
 	margin-left: 100px;
  	border-radius : 12px;   
     margin-left: 35px;
     height: 300px;
 
+=======
+    background-color: white ;
+    margin-left: auto;
+    border-radius : 12px;   
+    margin-left: 35px;
+    height: 300px;
+
+}
+
+	background-color: white ;
+	margin-left: 100px;
+ 	border-radius : 12px;   
+        margin-left: 35px;
+        height: 300px;
+
+>>>>>>> 8a2eb871f3c46d781b5c2ea8f55f77c111ddcada
  	background-color: white ;
 	margin-left: auto;
  	border-radius : 12px;   
    	margin-left: 35px;
    	height: 300px;
 
+<<<<<<< HEAD
 }
 
 .page-userslist .thumbnail
@@ -264,6 +297,17 @@ ul li.last{
    border-radius : 12px;   
    margin-left: 35px;
    height: 325px;
+=======
+
+
+.page-userslist .thumbnail
+{
+    background-color: white ;  
+    margin-left: auto;
+ 	border-radius : 12px;   
+    margin-left: 35px;
+    height: 325px;
+>>>>>>> 8a2eb871f3c46d781b5c2ea8f55f77c111ddcada
     
  
 }
@@ -280,4 +324,12 @@ ul li.last{
     margin-left: auto;
     margin-right: auto;
     max-width: 100%;
+}
+
+.thumb{
+	padding:5px;
+	width:65px;
+    height: 90px;
+    min-width: 10%;
+    min-height: 20%;
 }

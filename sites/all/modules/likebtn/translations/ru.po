@@ -1,0 +1,387 @@
+# Russian translation of Drupal (general)
+# Copyright Likebtn <info@likebtn.com>
+# Generated from files:
+#  likebtn/likebtn.module: n/a
+#  likebtn/likebtn.admin.inc: n/a
+#  likebtn/likebtn.info: n/a
+#  likebtn/likebtn.install: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Like Button (7.x-1.0)\n"
+"POT-Creation-Date: 2013-03-29 10:49-0700\n"
+"PO-Revision-Date: 2013-03-29 10:49+0500\n"
+"Last-Translator: LikeBtn <info@likebtn.com>\n"
+"Language-Team: LikeBtn <info@likebtn.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+
+#: likebtn.admin.inc:29
+msgid "You can set up the Like Button globally on this page, or per content type as a field in <a href="@link-manage_fields">Structure » Content types » Manage fields</a>."
+msgstr "Вы можете настроить кнопку «Мне нравится» для всего сайта на этой странице либо отдельно для типов документов в виде дополнительного поля на странице <a href="@link-manage_fields">Структура » Типы документов » Поля</a>."
+
+#: likebtn.admin.inc:29
+msgid "Keep in mind that only websites upgraded to <a href="http://www.likebtn.com/en/#plans_pricing" target="_blank">PLUS</a> plan or higher are allowed to display more then 3 like buttons per page."
+msgstr "Имейте в виду, что только сайты обновлённые до тарифного плана <a href="http://www.likebtn.com/ru/#plans_pricing" target="_blank">PLUS</a> и выше могут выводить более 3-х кнопок на одной странице."
+
+#: likebtn.admin.inc:38
+msgid "Enable for the following content types"
+msgstr "Активировать для следующих типов документов"
+
+#: likebtn.admin.inc:39
+msgid "Select the content types for which you want to activate like button."
+msgstr "Укажите типы документов, для которых активируется кнопка «Мне нравится»."
+
+#: likebtn.admin.inc:46
+msgid "Enable for comments to the following content types"
+msgstr "Активировать для комментариев к следующим типам документов"
+
+#: likebtn.admin.inc:47
+msgid "Select the content types for comments to which you want to activate like button."
+msgstr "Укажите типы документов, для комментариев к которым, активируется кнопка «Мне нравится»."
+
+#: likebtn.admin.inc:55
+msgid "Entities view modes"
+msgstr "Режимы отображения объектов"
+
+#: likebtn.admin.inc:56
+msgid "When will the like button be displayed?"
+msgstr "Когда будет отображаться кнопка «Мне нравится»?"
+
+#: likebtn.admin.inc:63
+msgid "Website tariff plan"
+msgstr "Тарифный план сайта"
+
+#: likebtn.admin.inc:63
+msgid "Specify your website <a href="http://www.likebtn.com/en/#plans_pricing">plan</a>. The plan specified determines available settings."
+msgstr "Укажите <a href="http://www.likebtn.com/ru/#plans_pricing">тарифный план</a> вашего сайта. Тарифный план определяет доступные опции."
+
+#: likebtn.admin.inc:63
+msgid "Position"
+msgstr "Положение"
+
+#: likebtn.admin.inc:64
+msgid "The more the weight, the lower like button position in the entity."
+msgstr "Чем больше вес, тем ниже кнопка «Мне нравится» располагается в объекте."
+
+#: likebtn.admin.inc:83
+msgid "Auto-synching likes into local database (PRO, VIP)"
+msgstr "Автоматическое копирование лайков в базу данных сайта (PRO, VIP)"
+
+#: likebtn.admin.inc:89
+msgid "Fill in these fields if you want information on likes to be periodically fetched from LikeBtn.com system into your database. It would allow to sort content in views by vote results using Voting API or LikeBtn field."
+msgstr "Заполните эти поля, если вы хотите, чтобы информация о лайках периодически копировалась из системы LikeBtn.com в вашу базу данных. Это позволит сортировать документы во views по количеству голосов, используя Voting API или поле LikeBtn."
+
+#: likebtn.admin.inc:89
+msgid "Requirements:"
+msgstr "Требования:"
+
+#: likebtn.admin.inc:89
+msgid "Your website must be upgraded to <a href="http://www.likebtn.com/en/#plans_pricing" target="_blank">PRO</a> or higher on <a href="http://www.likebtn.com/en/#plans_pricing" target="_blank">LikeBtn.com</a>."
+msgstr "Ваш сайт должен быть обновлён до тарифного плана <a href="http://www.likebtn.com/ru/#plans_pricing" target="_blank">PRO</a> или выше на <a hre="http://www.likebtn.com/ru/#plans_pricing" target="_blank">LikeBtn.com</a>"
+
+#: likebtn.admin.inc:89
+msgid "PHP curl extension must be enabled."
+msgstr "Должно быть активировано PHP-расширение curl."
+
+#: likebtn.admin.inc:89
+msgid "Attention: existing vote results of content types for which LikeBtn is enabled will be reseted and replaced with LikeBtn vote results (likes minus dislikes)."
+msgstr "Внимание: имеющиеся результаты голосований элементов, для которых активирована кнопка LikeBtn, будут сброшены и заменены результатами LikeBtn (лайки минус дислайки)."
+
+#: likebtn.admin.inc:89
+msgid "Synchronization interval"
+msgstr "Интервал синхронизации"
+
+#: likebtn.admin.inc:89
+msgid "Time interval in minutes in which fetching of likes from LikeBtn.com into your database is being launched. The less the interval the heavier your database load (60 minutes interval is recommended)"
+msgstr "Интервал времени в минутах, через который запускается получение лайков из LikeBtn.com в вашу базу данных. Чем меньше интервал, тем больше нагрузка на вашу базу данных (рекомендуемый интервал - 60 минут)"
+
+#: likebtn.admin.inc:96
+msgid "Your LikeBtn.com account email (can be found on <a href="http://www.likebtn.com/en/customer.php/profile/edit" target="_blank">Profile page</a>)"
+msgstr "Email-адрес вашей учётной записи на LikeBtn.com (можно найти на странице <a href="http://www.likebtn.com/ru/customer.php/profile/edit" target="_blank">Профиль</a>)"
+
+#: likebtn.admin.inc:100
+msgid "API key"
+msgstr "API-ключ"
+
+#: likebtn.admin.inc:96
+msgid "Your website API key on LikeBtn.com (can be requested on <a href="http://www.likebtn.com/en/customer.php/websites" target="_blank">Websites page</a>)"
+msgstr "API-ключ вашего сайта на LikeBtn.com (можно получить на странице <a href="http://www.likebtn.com/ru/customer.php/profile/edit" target="_blank">Сайты</a>)"
+
+#: likebtn.module:157
+msgid "LikeBtn: i18n_like"
+msgstr "LikeBtn: i18n_like"
+
+#: likebtn.module:158;357
+msgid "Like Button label"
+msgstr "Надпись «Мне нравится»"
+
+#: likebtn.module:162
+msgid "LikeBtn: i18n_dislike"
+msgstr "LikeBtn: i18n_dislike"
+
+#: likebtn.module:163;370
+msgid "Dislike Button label"
+msgstr "Надпись «Не нравится»"
+
+#: likebtn.module:167
+msgid "LikeBtn: i18n_like_tooltip"
+msgstr "LikeBtn: i18n_like_tooltip"
+
+#: likebtn.module:168;385
+msgid "Like Button tooltip"
+msgstr "Всплывающая подсказка «Мне это нравится»"
+
+#: likebtn.module:172
+msgid "LikeBtn: i18n_dislike_tooltip"
+msgstr "LikeBtn: i18n_dislike_tooltip"
+
+#: likebtn.module:173;392
+msgid "Dislike Button tooltip"
+msgstr "Всплывающая подсказка «Мне это не нравится»"
+
+#: likebtn.module:177
+msgid "LikeBtn: i18n_unlike_tooltip"
+msgstr "LikeBtn: i18n_unlike_tooltip"
+
+#: likebtn.module:178;399
+msgid "Like Button tooltip after \"liking\""
+msgstr "Всплывающая подсказка после нажатия «Мне нравится»"
+
+#: likebtn.module:182
+msgid "LikeBtn: i18n_undislike_tooltip"
+msgstr "LikeBtn: i18n_undislike_tooltip"
+
+#: likebtn.module:183;406
+msgid "Dislike Button tooltip after \"liking\""
+msgstr "Всплывающая подсказка после нажатия «Не нравится»"
+
+#: likebtn.module:187
+msgid "LikeBtn: i18n_share_text"
+msgstr "LikeBtn: i18n_share_text"
+
+#: likebtn.module:188;413
+msgid "Text displayed in share popup after \"liking\""
+msgstr "Текст во всплывающем окне «Поделиться» после нажатия «Мне нравится»"
+
+#: likebtn.module:192
+msgid "LikeBtn: i18n_popup_close"
+msgstr "LikeBtn: i18n_popup_close"
+
+#: likebtn.module:193;428
+msgid "Popup close button"
+msgstr "Надпись «Закрыть» во всплывающем окне"
+
+#: likebtn.module:197
+msgid "LikeBtn: i18n_popup_text"
+msgstr "LikeBtn: i18n_popup_text"
+
+#: likebtn.module:198;443
+msgid "Popup text when sharing is disabled"
+msgstr "Текст во всплывающем окне, когда функция «Поделиться» отключена"
+
+#: likebtn.module:212
+msgid "Settings..."
+msgstr "Настройки..."
+
+#: likebtn.module:213
+msgid "You can find detailed settings description on <a href=\"@link-likebtn\">LikeBtn.com</a>. Options marked with tariff plan name (PLUS, PRO, VIP) are available only if your website is upgraded to corresponding plan (<a href=\"@link-read_more\">read more about plans and pricing</a>)."
+msgstr "Вы можете найти подробное описание настроек на сайте <a href=\"@link-likebtn\">LikeBtn.com</a>. Опции, помеченные тарифным планом (PLUS, PRO, VIP), доступны только в том случае, если ваш вебсайт обновлён до соответствующего тарифного плана (<a href=\"@link-read_more\">подробнее про тарифы и цены</a>)."
+
+#: likebtn.module:223
+msgid "Style and language"
+msgstr "Стиль и язык"
+
+#: likebtn.module:230
+msgid "Style"
+msgstr "Стиль"
+
+#: likebtn.module:252
+msgid "Language"
+msgstr "Язык"
+
+#: likebtn.module:256
+msgid "Detect from client browser"
+msgstr "Определять из настроек браузера"
+
+#: likebtn.module:257
+msgid "English"
+msgstr "Английский"
+
+#: likebtn.module:258
+msgid "Russian"
+msgstr "Русский"
+
+#: likebtn.module:259
+msgid "German"
+msgstr "Немецкий"
+
+#: likebtn.module:260
+msgid "Japanese"
+msgstr "Японский"
+
+#: likebtn.module:265
+msgid "Appearance and behaviour"
+msgstr "Внешний вид и поведение"
+
+#: likebtn.module:272
+msgid "Offer to share a link in social networks after "liking" (PLUS, PRO, VIP)"
+msgstr "Предлагать поделиться ссылкой в социальных сетях после использования кнопки (PLUS, PRO, VIP)"
+
+#: likebtn.module:278
+msgid "Show \"like\"-label"
+msgstr "Выводить надпись «Мне нравится»"
+
+#: likebtn.module:284
+msgid "Show \"dislike\"-label"
+msgstr "Выводить надпись «Не нравится»"
+
+#: likebtn.module:290
+msgid "Offer to share a link in social networks after \"disliking\""
+msgstr "Предлагать поделиться ссылкой в социальных сетях после нажатия «Не нравится»	"
+
+#: likebtn.module:296
+msgid "Show Dislike Button"
+msgstr "Выводить кнопку «Не нравится»"
+
+#: likebtn.module:302
+msgid "Votes counter is clickable"
+msgstr "Можно голосовать, кликая на счётчике голосов"
+
+#: likebtn.module:302
+msgid "Counter type"
+msgstr "Тип счётчика"
+
+#: likebtn.module:302
+msgid "Voting is disabled, display results only"
+msgstr "Голосование отключено, только выводятся результаты"
+
+#: likebtn.module:308
+msgid "Dislikes are substracted from likes"
+msgstr "Дислайки вычитаются из лайков"
+
+#: likebtn.module:315
+msgid "Allow to unlike and undislike"
+msgstr "Разрешена отмена голоса"
+
+#: likebtn.module:314
+msgid "Show popop after \"liking\" (VIP)"
+msgstr "Показывать всплывающее окно после нажатия «Мне нравится» (VIP)"
+
+#: likebtn.module:321
+msgid "Statistics"
+msgstr "Статистика"
+
+#: likebtn.module:328
+msgid "AddThis <a href=\"@link-profile-id\">Profile ID</a>. Allows to collect sharing statistics and view it on AddThis <a href=\"@link-analytics-page\">analytics page</a> (PRO, VIP)"
+msgstr "<a href=\"@link-profile-id\">ID профиля</a> AddThis. Позволяет собирать статистику о том, как ваши посетители делятся понравившимся и просматривать статистику на странице <a href=\"@link-analytics-page\">аналитики AddThis</a> (PRO, VIP)"
+
+#: likebtn.module:340
+msgid "AddThis <a href=\"@link\">service codes</a> separated by comma (max 8). Used to specify which buttons are displayed in share popup. Example: google_plusone_share, facebook, twitter (PRO, VIP)"
+msgstr "<a href=\"@link\">Коды сервисов</a> AddThis, разделённые запятыми (максимум 8). Определяет, какие кнопки выводятся во всплывающем окне «Поделиться». Пример: google_plusone_share, facebook, twitter (PRO, VIP)"
+
+#: likebtn.module:349
+msgid "Labels"
+msgstr "Надписи"
+
+#: likebtn.module:456
+msgid "Live Demo"
+msgstr "Демо"
+
+#: likebtn.module:476 likebtn.info:0
+msgid "LikeBtn"
+msgstr "LikeBtn"
+
+#: likebtn.module:477
+msgid "Like Button."
+msgstr "Кнопка «Мне нравится»."
+
+#: likebtn.module:613
+msgid "LikeBtn (default)"
+msgstr "LikeBtn (по умолчанию)"
+
+#: likebtn.module:26
+msgid "LikeBtn configuration"
+msgstr "Настройки LikeBtn"
+
+#: likebtn.module:26
+msgid "Likes"
+msgstr "Лайки"
+
+#: likebtn.module:27
+msgid "Configuration for LikeBtn module"
+msgstr "Настройки модуля LikeBtn"
+
+#: likebtn.module:27
+msgid "Popup position"
+msgstr "Положение всплывающего окна"
+
+#: likebtn.module:27
+msgid "Popup style"
+msgstr "Стиль всплывающего окна"
+
+#: likebtn.module:27
+msgid "Show copyright link in the share popup"
+msgstr "Показывать © ссылку во всплывающем окне «Поделиться»"
+
+#: (duplicate) likebtn.install:13
+msgid "LikeBtn settings are available under !link"
+msgstr "Настройки LikeBtn доступны в разделе !link"
+
+#: (duplicate) likebtn.install:14
+msgid "Administration > Web services > LikeBtn configuration"
+msgstr "Конфигурация > Веб-службы > Настройки LikeBtn"
+
+#: likebtn.info:0
+msgid "Provides a fully customizable like button widget."
+msgstr "Предоставляет полностью настраеваемый виджет кнопки «Мне нравится»"
+
+#: likebtn.likes.inc:0
+msgid "Button"
+msgstr "Кнопка"
+
+#: likebtn.likes.inc:0
+msgid "Likes"
+msgstr "Лайки"
+
+#: likebtn.likes.inc:0
+msgid "Dislikes"
+msgstr "Дислайки"
+
+#: likebtn.likes.inc:0
+msgid "Likes minus dislikes"
+msgstr "Лайки минус дислайки"
+
+#: likebtn.likes.inc:0
+msgid "Like Button"
+msgstr "Кнопка «Мне нравится»"
+
+#: likebtn.likes.inc:0
+msgid "Total likes minus dislikes (vote results):"
+msgstr "Итого лайки минус дислайки (результат голосования):"
+
+#: likebtn.likes.inc:0
+msgid "If you don't see information on likes:"
+msgstr "Если вы не видите информации о лайках:"
+
+#: likebtn.likes.inc:0
+msgid "Make sure you have entered information correctly in"
+msgstr "Убедитесь, что вы корректно ввели данные на странице"
+
+#: likebtn.likes.inc:0
+msgid "Make sure that PHP curl extension is enabled."
+msgstr "Убедитесь, что PHP-расширение curl активировано."
+
+#: likebtn.likes.inc:0
+msgid "Maybe nobody voted for this content type yet."
+msgstr "Возможно, ещё никто не голосовал за этот элемент."
+
+#: likebtn.likes.inc:0
+msgid "Perhaps synchronization has not been launched yet."
+msgstr "Возможно, синхронизация ещё не была запущена."
+
+#: likebtn.likes.inc:0
+msgid "Field"
+msgstr "Поле"
