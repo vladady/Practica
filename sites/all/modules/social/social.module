@@ -621,11 +621,12 @@ function social_wall_posts() {
   drupal_set_title($title);
 
   $results = db_select('node', 'n');
-  $results->join('friends', 'f', 'f.fid = n.uid OR n.uid = ' . $user->uid);
+  $results->join('friends', 'f', 'f.fid = n.uid or n.uid='.$user->uid);
   $results = $results->fields('n', array('nid', 'title'))
       ->condition('f.uid', $user->uid)
       ->condition('n.type', 'post')
       ->orderBy('n.created', 'DESC')
+      ->distinct()
       ->extend('PagerDefault')
       ->limit($limit)
       ->execute();
