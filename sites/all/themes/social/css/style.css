@@ -18,6 +18,11 @@ body.front{
 	padding: 30px;
 	margin-left: 60px;
 }
+
+.row-fluid{
+
+	padding: 40px;
+}
 /*Formular*/
 .user-info-from-cookie{
   width: 335px;
@@ -280,5 +285,9 @@ ul li.last{
 
 .thumb{
 	padding:5px;
-	
+}
+
+.pozefront img{
+	display: block;
+	margin: auto;
 }

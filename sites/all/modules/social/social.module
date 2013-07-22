@@ -195,7 +195,7 @@ function social_get_users($limit = 9){
     $img = theme('image_style', array(
       'style_name' => 'thumbnail', 
       'path' => $path, 
-      'attributes' => array('class' => 'thumb')
+      'attributes' => array('class' => array('thumb', 'img-polaroid'))
      )
     );
     if($i%3==0){
