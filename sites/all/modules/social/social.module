@@ -714,20 +714,21 @@ function social_menu_link(&$variables){
     global $user;
     $profile = profile2_load_by_user($user->uid);
     $profile = reset($profile);
+    if(!empty($profile)) {
+      $wrapper = entity_metadata_wrapper('profile2', $profile);
+      $img = $wrapper->field_poza->value();
+      $icon = theme('image_style', array('style_name' => 'logo', 'path' => $img['uri']));
 
-    $wrapper = entity_metadata_wrapper('profile2', $profile);
-    $img = $wrapper->field_poza->value();
-    $icon = theme('image_style', array('style_name' => 'logo', 'path' => $img['uri']));
+      $element = $variables['element'];
+      $sub_menu = '';
 
-    $element = $variables['element'];
-    $sub_menu = '';
-
-    if ($element['#below']) {
-      $sub_menu = drupal_render($element['#below']);
+      if ($element['#below']) {
+        $sub_menu = drupal_render($element['#below']);
+      }
+      $element['#localized_options'] += array('html' => TRUE);
+      $output = l($icon . ' ' . $element['#title'], $element['#href'], $element['#localized_options']);
+      return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
     }
-    $element['#localized_options'] += array('html' => TRUE);
-    $output = l($icon . ' ' . $element['#title'], $element['#href'], $element['#localized_options']);
-    return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
   }
 
   return theme_menu_link($variables);
