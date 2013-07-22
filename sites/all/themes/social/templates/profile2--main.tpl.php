@@ -35,7 +35,7 @@
       <div class="span6 offset1">
       <div class="row">
       <div class="span8"></div>
-      <div id='text-profile2' class="span8">
+      <div id='text-profile2' class="span9">
         <?php
         //   #0088CC
        $date =  '<i class="icon-gift"></i> ' ;
