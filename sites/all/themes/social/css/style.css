@@ -217,21 +217,18 @@ ul li.last{
 
 .page-requests .thumbnail{
     background-color: white ;
-   margin-left: auto;
-     
-   margin-left: 35px;
-   border-radius : 12px;
-   height: 325px;
+   	margin-left: auto;   
+   	margin-left: 35px;
+   	border-radius : 12px;
+   	height: 325px;
 }
 
 
 .page-friends .thumbnail {
-
- background-color: white ;
-
-margin-left: auto;
- border-radius : 12px;   
-   margin-left: 35px;
-   height: 300px;
+ 	background-color: white ;
+	margin-left: auto;
+ 	border-radius : 12px;   
+   	margin-left: 35px;
+   	height: 300px;
 }
 
