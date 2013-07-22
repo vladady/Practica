@@ -69,12 +69,8 @@ function social_front_page(){
       '#prefix' => '<div class="span6">',
       '#suffix' => '</div>',
 
-      '#markup' => '<div class="row-fluid2"><p></p>'.social_get_users().'</div>',
+      '#markup' => '<div class="row-fluid">'.social_get_users().'</div>',
 
-
-      '#markup' => social_get_users(),
-
-      '#markup' => '<div class="row-fluid2">'.social_get_users().'</div>',
 
       '#weight' => 0,
     );
@@ -209,7 +205,7 @@ function social_get_users($limit = 9){
       $output.='<div class="row-fluid"></div>';
     }
     $i++;
-    $output .= $img;
+    $output .='<div class="span3">'. $img.'</div>';
     if($i==18)
       break;
   }
