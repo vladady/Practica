@@ -20,7 +20,7 @@ body.front{
 }
 /*Formular*/
 .user-info-from-cookie{
-  width: 300px;
+  width: 335px;
 	background: rgba(0, 0, 0, 0.6);
 	padding: 10px;
   padding-left: 20px;
@@ -199,6 +199,8 @@ ul li.last{
 /* page profile */
 .page-profile-main .content{
 	color: black;
+	padding: 20px;
+	width: 70%;
 }
 
 .page-profile-main .image-widget-data{
@@ -207,6 +209,7 @@ ul li.last{
 
 /* end page profile */
 
+<<<<<<< HEAD
 
 /* requests */
 
@@ -227,3 +230,5 @@ margin-left: auto;
  border-radius : 12px;   
    margin-left: 35px;
 }
+=======
+>>>>>>> 4f92d18cb98094bdc69adae0825deddcfae517a5
